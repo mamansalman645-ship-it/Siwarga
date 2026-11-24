@@ -1,0 +1,2374 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#0f766e">
+<title>SIWARGA RT 03 / RW 02 — Desa Babakansari</title>
+<meta name="description" content="Sistem pendataan warga RT 03 RW 02 Desa Babakansari, Kecamatan Sukaluyu, Kabupaten Cianjur.">
+<style>
+  :root{
+    --bg:#f2f6f5; --card:#fff; --ink:#0d2b29; --muted:#64748b;
+    --line:#e3eae8; --brand:#0f766e; --brand2:#14b8a6;
+    --accent:#f59e0b; --danger:#dc2626; --ok:#16a34a;
+    --radius:18px; --shadow:0 6px 22px rgba(13,43,41,.07);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',sans-serif;
+    background:var(--bg);color:var(--ink);padding-bottom:110px;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,h4{margin:0}
+  button{font-family:inherit}
+
+  /* ============================================================
+     LOGIN SCREEN
+     ============================================================ */
+  .login-overlay{
+    position:fixed;inset:0;z-index:9999;
+    background:linear-gradient(160deg,#0f766e 0%,#14b8a6 55%,#5eead4 100%);
+    display:flex;align-items:center;justify-content:center;
+    padding:20px;overflow-y:auto;
+  }
+  .login-overlay.hide{display:none}
+  .login-overlay::before{
+    content:"";position:absolute;top:-100px;right:-100px;
+    width:320px;height:320px;border-radius:50%;
+    background:rgba(255,255,255,.08);pointer-events:none;
+  }
+  .login-overlay::after{
+    content:"";position:absolute;bottom:-120px;left:-120px;
+    width:360px;height:360px;border-radius:50%;
+    background:rgba(255,255,255,.06);pointer-events:none;
+  }
+  .login-card{
+    position:relative;background:#fff;border-radius:28px;
+    padding:32px 26px 26px;max-width:390px;width:100%;
+    box-shadow:0 30px 70px rgba(0,0,0,.28);
+    animation:loginIn .55s cubic-bezier(.2,.9,.3,1);
+  }
+  @keyframes loginIn{
+    from{opacity:0;transform:translateY(24px) scale(.94)}
+    to{opacity:1;transform:none}
+  }
+  .login-logo{
+    width:132px;height:132px;margin:0 auto 20px;display:block;
+    filter:drop-shadow(0 8px 18px rgba(15,118,110,.28));
+  }
+  .login-welcome{
+    text-align:center;font-size:20px;font-weight:900;
+    letter-spacing:3.5px;color:#0f766e;margin-bottom:10px;
+    line-height:1.2;
+  }
+  .login-welcome-line{
+    width:52px;height:3px;border-radius:3px;
+    background:linear-gradient(90deg,#0f766e,#14b8a6);
+    margin:0 auto 14px;
+  }
+  .login-sub{
+    text-align:center;font-size:12px;color:#64748b;
+    line-height:1.6;margin-bottom:24px;font-weight:600;
+  }
+  .login-sub b{color:#0f766e;font-weight:800;display:inline-block;margin-top:3px}
+  .login-field{margin-bottom:11px;position:relative}
+  .login-field label{
+    display:block;font-size:10.5px;font-weight:800;color:#64748b;
+    text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;
+  }
+  .login-field input{
+    width:100%;padding:14px 46px 14px 15px;border-radius:13px;
+    border:1.5px solid #e3eae8;background:#f8fbfa;
+    font-size:14px;font-family:inherit;color:#0d2b29;outline:none;
+    transition:.15s;
+  }
+  .login-field input:focus{
+    border-color:#14b8a6;background:#fff;
+    box-shadow:0 0 0 3px rgba(20,184,166,.15);
+  }
+  .login-field input.err{border-color:#dc2626;background:#fef2f2}
+  .login-eye{
+    position:absolute;right:8px;bottom:8px;
+    width:34px;height:34px;border:0;background:none;
+    font-size:17px;cursor:pointer;color:#94a3b8;
+    display:grid;place-items:center;border-radius:9px;
+    transition:.15s;
+  }
+  .login-eye:active{background:#eef3f2}
+  .login-msg{
+    font-size:12px;font-weight:700;color:#dc2626;
+    margin:2px 0 10px;text-align:center;min-height:16px;line-height:1.4;
+  }
+  .login-btn{
+    width:100%;padding:15px;border-radius:14px;border:0;
+    background:linear-gradient(135deg,#0f766e,#14b8a6);color:#fff;
+    font-size:14.5px;font-weight:800;letter-spacing:.3px;cursor:pointer;
+    box-shadow:0 8px 20px rgba(15,118,110,.35);
+    transition:transform .15s;margin-top:4px;
+  }
+  .login-btn:active{transform:scale(.97)}
+  .login-foot{
+    text-align:center;font-size:10.5px;color:#94a3b8;
+    margin-top:16px;line-height:1.6;font-weight:600;
+  }
+  .login-foot .lnk{color:#0f766e;font-weight:800;text-decoration:underline;cursor:pointer}
+  .login-hint{
+    font-size:11px;color:#78500a;margin-top:14px;padding:11px 13px;
+    background:#fff8e6;border:1px solid #fde68a;border-radius:11px;
+    line-height:1.5;
+  }
+  .login-hint b{color:#92400e}
+
+  /* HEADER */
+  header{
+    background:linear-gradient(135deg,#0f766e 0%,#14b8a6 100%);
+    color:#fff;padding:16px 18px;position:sticky;top:0;z-index:20;
+    box-shadow:0 6px 20px rgba(15,118,110,.28);
+    border-radius:0 0 22px 22px;
+  }
+  .brand{display:flex;align-items:center;gap:11px}
+  .logo{
+    width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.18);
+    display:grid;place-items:center;font-size:20px;flex:0 0 auto;
+    border:1px solid rgba(255,255,255,.25)
+  }
+  .brand .tt{flex:1;min-width:0}
+  .brand h1{font-size:15.5px;font-weight:800;letter-spacing:.2px}
+  .brand p{margin:2px 0 0;font-size:11px;opacity:.9;font-weight:700;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hbadge{
+    background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);
+    padding:7px 11px;border-radius:12px;font-size:10.5px;font-weight:800;
+    text-align:center;line-height:1.15;flex:0 0 auto;
+  }
+  .hbadge b{display:block;font-size:15px}
+
+  /* LAYOUT */
+  main{padding:16px;max-width:780px;margin:0 auto}
+  .page{display:none}
+  .page.active{display:block;animation:fade .26s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  .card{
+    background:var(--card);border-radius:var(--radius);padding:16px;
+    box-shadow:var(--shadow);border:1px solid var(--line);margin-bottom:14px;
+  }
+  .section-title{
+    font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;
+    color:var(--muted);margin:18px 4px 10px;
+  }
+  .section-title:first-child{margin-top:0}
+
+  /* ============================================================
+     RUNNING TEXT — Kartu sambutan Beranda
+     ============================================================ */
+  .greet-card{
+    background:linear-gradient(135deg,#0f766e,#14b8a6);
+    border:0;color:#fff;margin-bottom:14px;
+    overflow:hidden;position:relative;
+  }
+  .greet-card::after{
+    content:"";position:absolute;width:180px;height:180px;
+    border-radius:50%;background:rgba(255,255,255,.08);
+    right:-70px;top:-80px;pointer-events:none;
+  }
+  .greet-label{
+    font-size:9.5px;font-weight:800;letter-spacing:2px;
+    text-transform:uppercase;opacity:.75;
+    display:flex;align-items:center;gap:6px;margin-bottom:10px;
+    position:relative;z-index:1;
+  }
+  .greet-live{
+    display:inline-flex;align-items:center;gap:4px;
+  }
+  .greet-live::before{
+    content:"";width:6px;height:6px;border-radius:50%;
+    background:#fbbf24;box-shadow:0 0 0 0 rgba(251,191,36,.6);
+    animation:pulse 1.6s ease-out infinite;
+  }
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(251,191,36,.7)}
+    100%{box-shadow:0 0 0 8px rgba(251,191,36,0)}
+  }
+
+  .marquee{
+    overflow:hidden;
+    white-space:nowrap;
+    position:relative;
+    padding:6px 0;
+    -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 6%,#000 94%,transparent 100%);
+    mask-image:linear-gradient(90deg,transparent 0,#000 6%,#000 94%,transparent 100%);
+    z-index:1;
+  }
+  .marquee-track{
+    display:inline-block;
+    padding-left:100%;
+    animation:greetScroll 24s linear infinite;
+    will-change:transform;
+  }
+  @keyframes greetScroll{
+    0%{transform:translateX(0)}
+    100%{transform:translateX(-100%)}
+  }
+  .marquee-track .h2{
+    display:inline-block;
+    font-size:18px;
+    font-weight:800;
+    letter-spacing:.4px;
+    line-height:1.3;
+    white-space:nowrap;
+  }
+  .marquee-track .sep{
+    display:inline-block;
+    margin:0 18px;
+    opacity:.5;
+    font-weight:400;
+  }
+  .greet-date{
+    font-size:11px;
+    opacity:.9;
+    margin-top:6px;
+    font-weight:600;
+    position:relative;z-index:1;
+    display:flex;align-items:center;gap:6px;
+  }
+
+  /* WILAYAH BANNER */
+  .wilayah{
+    display:flex;gap:12px;align-items:center;padding:13px 15px;
+    background:linear-gradient(135deg,#0f766e,#14b8a6);color:#fff;
+    border-radius:16px;margin-bottom:14px;
+    box-shadow:0 8px 22px rgba(15,118,110,.25);
+  }
+  .wilayah .wi{font-size:20px;flex:0 0 auto}
+  .wilayah .wt{flex:1;min-width:0}
+  .wilayah .wt b{display:block;font-size:13px;font-weight:800;margin-bottom:2px}
+  .wilayah .wt span{font-size:10.5px;opacity:.9;font-weight:600}
+
+  .search{
+    width:100%;padding:13px 15px;border-radius:14px;border:1px solid var(--line);
+    background:var(--card);font-size:14px;outline:none;box-shadow:var(--shadow);
+    margin-bottom:12px;color:var(--ink);
+  }
+  .search:focus{border-color:var(--brand2);box-shadow:0 0 0 3px rgba(20,184,166,.15)}
+  .chips{display:flex;gap:7px;overflow-x:auto;padding-bottom:8px;margin-bottom:12px;scrollbar-width:none}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{
+    flex:0 0 auto;padding:8px 13px;border-radius:18px;border:1px solid var(--line);
+    background:var(--card);font-size:11.5px;font-weight:800;color:var(--muted);
+    cursor:pointer;white-space:nowrap;transition:.15s;
+  }
+  .chip.on{background:var(--brand);color:#fff;border-color:var(--brand);box-shadow:0 4px 12px rgba(15,118,110,.3)}
+
+  .avatar{
+    width:44px;height:44px;border-radius:13px;display:grid;place-items:center;
+    font-size:16px;font-weight:800;color:#fff;flex:0 0 auto;
+  }
+  .avatar.L{background:linear-gradient(135deg,#2563eb,#3b82f6)}
+  .avatar.P{background:linear-gradient(135deg,#db2777,#ec4899)}
+
+  .warga-card{
+    background:var(--card);border:1px solid var(--line);border-radius:15px;
+    padding:12px 13px;margin-bottom:9px;box-shadow:var(--shadow);
+    cursor:pointer;transition:transform .15s;
+  }
+  .warga-card:active{transform:scale(.985)}
+  .warga-card .top{display:flex;gap:11px;align-items:center;margin-bottom:8px}
+  .warga-card .wav{
+    width:44px;height:44px;border-radius:13px;display:grid;place-items:center;
+    color:#fff;font-size:16px;font-weight:800;flex:0 0 auto;position:relative;
+  }
+  .warga-card .wav.L{background:linear-gradient(135deg,#2563eb,#3b82f6)}
+  .warga-card .wav.P{background:linear-gradient(135deg,#db2777,#ec4899)}
+  .warga-card .wav .head-star{
+    position:absolute;bottom:-3px;right:-3px;width:18px;height:18px;
+    background:#f59e0b;border:2px solid #fff;border-radius:50%;
+    display:grid;place-items:center;font-size:9px;
+  }
+  .warga-card .wt{flex:1;min-width:0}
+  .warga-card .wt b{display:block;font-size:13px;font-weight:700;margin-bottom:2px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .warga-card .wt small{font-size:10.5px;color:var(--muted);font-weight:600}
+  .warga-card .age{
+    background:#f1f5f4;padding:6px 9px;border-radius:10px;
+    font-size:9.5px;font-weight:700;color:var(--muted);text-align:center;
+    line-height:1.2;flex:0 0 auto;
+  }
+  .warga-card .age b{display:block;font-size:15px;color:var(--brand)}
+  .warga-card .badges{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
+  .warga-card .badge{
+    font-size:9.5px;font-weight:800;padding:3px 8px;border-radius:7px;
+    letter-spacing:.2px;
+  }
+  .badge.head{background:#fef3c7;color:#92400e}
+  .badge.hp{background:#dcfce7;color:#15803d}
+  .badge.alamat{background:#e0e7ff;color:#3730a3}
+  .warga-card .completeness{
+    display:flex;align-items:center;gap:6px;font-size:10px;
+    color:var(--muted);font-weight:700;
+  }
+  .warga-card .completeness .dots{display:flex;gap:3px}
+  .warga-card .completeness .d{
+    width:7px;height:7px;border-radius:50%;background:#d6e0de;
+  }
+  .warga-card .completeness .d.on{background:var(--brand2)}
+  .warga-card .completeness .pct{margin-left:auto;color:var(--brand);font-weight:800}
+
+  .kk-card{
+    background:var(--card);border:1px solid var(--line);border-radius:15px;
+    padding:13px;margin-bottom:10px;box-shadow:var(--shadow);cursor:pointer;
+    transition:transform .15s;
+  }
+  .kk-card:active{transform:scale(.985)}
+  .kk-card .head{display:flex;gap:11px;align-items:center;margin-bottom:9px}
+  .kk-card .kav{
+    width:42px;height:42px;border-radius:12px;background:#e6f4f1;
+    display:grid;place-items:center;font-size:20px;flex:0 0 auto;
+  }
+  .kk-card .kt{flex:1;min-width:0}
+  .kk-card .kt b{display:block;font-size:13px;font-weight:800;margin-bottom:2px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .kk-card .kt small{font-size:10px;color:var(--muted);font-weight:600}
+  .kk-card .cnt{
+    background:#e6f4f1;color:#0f766e;padding:6px 10px;border-radius:9px;
+    font-size:10.5px;font-weight:800;flex:0 0 auto;
+  }
+  .kk-card .addr{font-size:11px;color:var(--muted);margin-bottom:9px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .kk-card .avatars{display:flex;gap:4px;align-items:center}
+  .kk-card .mini-av{
+    width:26px;height:26px;border-radius:9px;display:grid;place-items:center;
+    font-size:10.5px;font-weight:800;color:#fff;
+  }
+  .kk-card .mini-av.L{background:linear-gradient(135deg,#2563eb,#3b82f6)}
+  .kk-card .mini-av.P{background:linear-gradient(135deg,#db2777,#ec4899)}
+  .kk-card .more{
+    font-size:10px;font-weight:800;color:var(--muted);
+    background:#f1f5f4;padding:5px 8px;border-radius:8px;
+  }
+  .kk-card .go{margin-left:auto;font-size:16px;color:#c8d6d3}
+
+  .statgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
+  .stat{
+    background:var(--card);border-radius:16px;padding:13px 14px;
+    border:1px solid var(--line);box-shadow:var(--shadow);
+    position:relative;overflow:hidden;cursor:pointer;
+    transition:transform .15s;
+  }
+  .stat:active{transform:scale(.97)}
+  .stat .lb{font-size:10px;font-weight:800;color:var(--muted);
+    text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+  .stat .vl{font-size:24px;font-weight:800;line-height:1}
+  .stat .sb{font-size:10.5px;color:var(--muted);margin-top:4px;font-weight:600}
+  .stat .arrow{position:absolute;right:10px;top:10px;font-size:14px;color:#c8d6d3}
+
+  .aksi{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:14px}
+  .aksi .a{
+    background:var(--card);border-radius:14px;padding:13px 4px;text-align:center;
+    border:1px solid var(--line);box-shadow:var(--shadow);cursor:pointer;
+    transition:transform .15s;
+  }
+  .aksi .a:active{transform:scale(.94)}
+  .aksi .a .ic{font-size:22px;display:block;margin-bottom:5px}
+  .aksi .a .lbl{font-size:10px;font-weight:800;color:var(--muted);line-height:1.2}
+
+  .alert{
+    display:flex;gap:10px;align-items:flex-start;padding:11px 13px;
+    background:#fff8e6;border:1px solid #fde68a;border-radius:13px;
+    margin-bottom:9px;font-size:12px;line-height:1.5;color:#78500a;
+  }
+  .alert.danger{background:#fdecec;border-color:#fecaca;color:#991b1b}
+  .alert.info{background:#e6f4f1;border-color:#b8e0d8;color:#0f766e}
+  .alert .ai{font-size:15px;flex:0 0 auto;line-height:1.2}
+
+  .mini-chart{
+    background:var(--card);border-radius:15px;padding:13px 14px;
+    border:1px solid var(--line);box-shadow:var(--shadow);margin-bottom:13px;
+  }
+  .mini-chart .ttl{
+    font-size:10.5px;font-weight:800;color:var(--muted);
+    text-transform:uppercase;letter-spacing:.5px;margin-bottom:11px;
+  }
+  .donut-wrap{display:flex;align-items:center;gap:15px}
+  .donut{
+    width:72px;height:72px;border-radius:50%;position:relative;flex:0 0 auto;
+    background:conic-gradient(#3b82f6 0deg 180deg, #ec4899 180deg 360deg);
+  }
+  .donut::before{content:"";position:absolute;inset:11px;border-radius:50%;background:#fff}
+  .donut-lbl{position:absolute;inset:0;display:grid;place-items:center;
+    font-size:13px;font-weight:800;z-index:1}
+  .donut-info{flex:1;font-size:12px;line-height:1.8}
+  .donut-info .row{display:flex;align-items:center;gap:7px;font-weight:700}
+  .donut-info .dot{width:9px;height:9px;border-radius:50%}
+
+  .aktivitas{
+    background:var(--card);border-radius:15px;padding:13px 14px;
+    border:1px solid var(--line);box-shadow:var(--shadow);
+  }
+  .aktivitas .ttl{
+    font-size:10.5px;font-weight:800;color:var(--muted);
+    text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;
+  }
+  .akt-item{display:flex;gap:10px;align-items:center;padding:9px 0;
+    border-bottom:1px solid #f0f5f4;font-size:12px;cursor:pointer}
+  .akt-item:last-child{border-bottom:0;padding-bottom:0}
+  .akt-item .av{
+    width:30px;height:30px;border-radius:9px;display:grid;place-items:center;
+    font-size:12px;font-weight:800;color:#fff;flex:0 0 auto;
+  }
+  .akt-item .av.L{background:linear-gradient(135deg,#2563eb,#3b82f6)}
+  .akt-item .av.P{background:linear-gradient(135deg,#db2777,#ec4899)}
+  .akt-item .txt{flex:1;min-width:0}
+  .akt-item .txt b{font-weight:700;font-size:12px;display:block;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .akt-item .txt div{color:var(--muted);font-size:10.5px;margin-top:1px}
+  .akt-item .time{font-size:10px;color:#94a3b8;font-weight:700;flex:0 0 auto}
+
+  .empty{text-align:center;padding:44px 16px;color:var(--muted);font-size:13px;line-height:1.6}
+  .empty div:first-child{font-size:44px;margin-bottom:12px;opacity:.5}
+
+  .field{margin-bottom:14px}
+  .field label{
+    display:block;font-size:11px;font-weight:800;color:var(--muted);
+    margin-bottom:6px;letter-spacing:.4px;text-transform:uppercase;
+  }
+  .field input,.field select,.field textarea{
+    width:100%;padding:12px 14px;border-radius:12px;border:1.5px solid var(--line);
+    background:#fff;font-size:14px;font-family:inherit;color:var(--ink);
+    outline:none;transition:.15s;
+  }
+  .field textarea{resize:vertical;min-height:70px}
+  .field input:focus,.field select:focus,.field textarea:focus{
+    border-color:var(--brand2);box-shadow:0 0 0 3px rgba(20,184,166,.13);
+  }
+  .field input.err,.field select.err{border-color:var(--danger);background:#fef2f2}
+  .field input:read-only{background:#f1f5f4;color:#475569;cursor:not-allowed}
+  .hint{font-size:10.5px;color:#94a3b8;margin-top:5px;line-height:1.45}
+  .errmsg{font-size:11px;color:var(--danger);margin-top:5px;font-weight:800;display:none}
+  .field.haserr .errmsg{display:block}
+  .pills{display:flex;gap:8px}
+  .pills button{
+    flex:1;padding:11px;border-radius:12px;border:1.5px solid var(--line);
+    background:#fff;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;
+    transition:.15s;
+  }
+  .pills button.on{background:#e6f4f1;border-color:var(--brand);color:var(--brand)}
+
+  .locked{
+    padding:12px 14px;border-radius:12px;background:#e6f4f1;
+    border:1.5px solid #b8e0d8;font-size:13.5px;font-weight:800;color:#0f766e;
+    display:flex;align-items:center;gap:8px;
+  }
+
+  .kk-info{
+    background:#f8fbfa;border:1px solid #e1eae8;border-radius:12px;
+    padding:11px 13px;margin-bottom:14px;
+  }
+  .kk-info-head{
+    display:flex;justify-content:space-between;font-size:11.5px;
+    font-weight:800;color:#0f766e;margin-bottom:8px;gap:10px;
+  }
+  .ku-names{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+  .ku-name{
+    display:inline-flex;align-items:center;gap:5px;
+    background:#eef4f3;color:#1f3b38;padding:6px 11px;border-radius:10px;
+    font-size:12px;font-weight:700;cursor:pointer;
+    border:1px solid #e1eae8;transition:background .15s, transform .12s;
+    line-height:1.3;
+  }
+  .ku-name:active{background:#d8eae5;transform:scale(.97)}
+  .ku-name .dot{width:7px;height:7px;border-radius:50%;flex:0 0 auto}
+  .ku-name .dot.L{background:#3b82f6}
+  .ku-name .dot.P{background:#ec4899}
+
+  .btn{
+    display:block;width:100%;padding:15px;border-radius:14px;border:0;
+    background:linear-gradient(135deg,#0f766e,#14b8a6);color:#fff;
+    font-size:14.5px;font-weight:800;cursor:pointer;letter-spacing:.2px;
+    box-shadow:0 8px 20px rgba(15,118,110,.3);transition:transform .15s;
+  }
+  .btn:active{transform:scale(.97)}
+  .btn.ghost{background:var(--card);color:var(--brand);border:1.5px solid var(--brand);
+    box-shadow:none}
+  .btn.danger{background:linear-gradient(135deg,#dc2626,#ef4444);
+    box-shadow:0 8px 20px rgba(220,38,38,.28)}
+  .btn.gray{background:#eef3f2;color:var(--muted);box-shadow:none}
+  .btnrow{display:flex;gap:10px}
+  .btnrow .btn{margin:0}
+
+  .stat-summary{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
+  .bar{margin-bottom:14px}
+  .bar:last-child{margin-bottom:0}
+  .bar .bl{display:flex;justify-content:space-between;font-size:12px;
+    font-weight:700;margin-bottom:5px;gap:10px}
+  .bar .bl span:first-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .bar .bl span:last-child{color:var(--muted);font-weight:800;flex:0 0 auto}
+  .bar .track{height:9px;border-radius:10px;background:#eaf1ef;overflow:hidden}
+  .bar .fill{height:100%;border-radius:10px;transition:width .5s ease;
+    background:linear-gradient(90deg,#14b8a6,#0f766e)}
+
+  .ku-group{
+    border-bottom:1px solid #f0f5f4;padding-bottom:14px;margin-bottom:14px;
+  }
+  .ku-group:last-child{border-bottom:0;padding-bottom:0;margin-bottom:0}
+  .ku-head{display:flex;justify-content:space-between;font-size:12.5px;
+    font-weight:800;margin-bottom:7px;gap:10px}
+  .ku-head .ku-count{color:var(--muted);font-weight:800;flex:0 0 auto}
+  .ku-empty{font-size:12px;color:#94a3b8;font-style:italic;margin-top:6px}
+
+  .item{
+    display:flex;gap:12px;align-items:center;background:var(--card);
+    border:1px solid var(--line);border-radius:15px;padding:12px 13px;
+    margin-bottom:9px;cursor:pointer;box-shadow:var(--shadow);
+    transition:transform .15s ease;
+  }
+  .item:active{transform:scale(.985)}
+  .item .txt{flex:1;min-width:0}
+  .item .txt h4{font-size:13.5px;font-weight:700;margin-bottom:3px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .item .txt p{font-size:11px;color:var(--muted);margin:0;line-height:1.4;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+  .sheet{
+    position:fixed;inset:0;background:rgba(13,43,41,.5);z-index:60;display:none;
+    align-items:flex-end;backdrop-filter:blur(2px);
+  }
+  .sheet.open{display:flex;animation:fade .2s}
+  .sheet-inner{
+    background:#fff;width:100%;max-height:92vh;border-radius:26px 26px 0 0;
+    overflow-y:auto;padding:10px 20px 30px;animation:up .3s cubic-bezier(.2,.9,.3,1);
+    max-width:780px;margin:0 auto;
+  }
+  @keyframes up{from{transform:translateY(100%)}to{transform:none}}
+  .grab{width:44px;height:5px;border-radius:10px;background:#d6e0de;margin:0 auto 18px}
+
+  .detail-head{display:flex;gap:14px;align-items:center;margin-bottom:18px}
+  .detail-head .avatar{width:56px;height:56px;border-radius:16px;font-size:20px}
+  .detail-head h3{font-size:17px;font-weight:800;line-height:1.3;margin-bottom:3px}
+  .detail-head p{font-size:11.5px;color:var(--muted);margin:0;font-weight:600}
+
+  .dl{display:flex;padding:11px 0;border-bottom:1px solid #f0f5f4;gap:12px}
+  .dl:last-of-type{border-bottom:0}
+  .dl .dk{font-size:11px;font-weight:800;color:var(--muted);flex:0 0 40%;
+    text-transform:uppercase;letter-spacing:.3px;line-height:1.5}
+  .dl .dv{font-size:13px;font-weight:600;flex:1;line-height:1.5;word-break:break-word}
+
+  .fab{
+    position:fixed;
+    bottom:calc(88px + env(safe-area-inset-bottom));
+    right:18px;
+    width:58px;height:58px;border-radius:50%;
+    background:linear-gradient(135deg,#0f766e,#14b8a6);
+    color:#fff;font-size:30px;font-weight:300;
+    display:grid;place-items:center;
+    box-shadow:0 10px 26px rgba(15,118,110,.5);
+    border:3px solid #fff;cursor:pointer;z-index:45;
+    transition:transform .15s;
+  }
+  .fab:active{transform:scale(.9)}
+  .fab.hide{display:none}
+
+  nav.bottom{
+    position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;z-index:50;
+    border-top:1px solid var(--line);padding:8px 4px calc(8px + env(safe-area-inset-bottom));
+    box-shadow:0 -4px 20px rgba(13,43,41,.07);
+  }
+  nav.bottom button{
+    flex:1;background:none;border:0;display:flex;flex-direction:column;align-items:center;
+    gap:3px;font-size:10px;color:var(--muted);padding:4px 2px;cursor:pointer;font-weight:700;
+    transition:color .15s;
+  }
+  nav.bottom button .ic{font-size:19px;line-height:1;filter:grayscale(1);opacity:.55;transition:.18s}
+  nav.bottom button.active{color:var(--brand)}
+  nav.bottom button.active .ic{filter:none;opacity:1;transform:translateY(-1px)}
+
+  .foot{font-size:10.5px;color:#9aa8a6;text-align:center;padding:6px 0 14px;line-height:1.6}
+  .toast{
+    position:fixed;bottom:104px;left:50%;transform:translateX(-50%) translateY(20px);
+    background:#0d2b29;color:#fff;padding:12px 20px;border-radius:14px;font-size:13px;
+    font-weight:700;z-index:90;opacity:0;pointer-events:none;transition:.28s;
+    box-shadow:0 10px 30px rgba(0,0,0,.25);max-width:88vw;text-align:center;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     LOGIN SCREEN
+     ============================================================ -->
+<div class="login-overlay" id="loginScreen">
+  <div class="login-card">
+
+    <svg class="login-logo" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg" aria-label="Logo SIWARGA RT 03 RW 02 Desa Babakansari">
+      <defs>
+        <linearGradient id="lgRt" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#0f766e"/>
+          <stop offset="100%" stop-color="#14b8a6"/>
+        </linearGradient>
+      </defs>
+      <circle cx="70" cy="70" r="68" fill="url(#lgRt)"/>
+      <circle cx="70" cy="70" r="63" fill="none" stroke="#fbbf24" stroke-width="1.8"/>
+      <circle cx="70" cy="70" r="58" fill="white"/>
+      <circle cx="70" cy="70" r="51" fill="url(#lgRt)"/>
+      <text x="70" y="48" text-anchor="middle" font-size="9" font-weight="800" fill="white" letter-spacing="4" opacity=".95">RT</text>
+      <text x="70" y="88" text-anchor="middle" font-size="36" font-weight="900" fill="white">03</text>
+      <text x="70" y="107" text-anchor="middle" font-size="8.5" font-weight="800" fill="white" letter-spacing="2.5" opacity=".95">RW 02</text>
+    </svg>
+
+    <div class="login-welcome">SELAMAT DATANG</div>
+    <div class="login-welcome-line"></div>
+    <div class="login-sub">
+      Sistem Pendataan Penduduk<br>
+      <b>RT 03 / RW 02 · Desa Babakansari</b>
+    </div>
+
+    <div id="loginLogin" style="display:none">
+      <div class="login-field"><label>Email Petugas</label><input type="email" id="loginEmail" placeholder="nama@email.com" autocomplete="email"></div>
+      <div class="login-field">
+        <label>Kata Sandi</label>
+        <input type="password" id="loginPw" placeholder="Masukkan kata sandi" autocomplete="current-password">
+        <button class="login-eye" type="button" data-eye="loginPw">👁</button>
+      </div>
+      <div class="login-msg" id="loginMsg"></div>
+      <button class="login-btn" id="btnLogin">Masuk</button>
+      <div class="login-foot">
+        Akses khusus akun Ketua RT yang telah didaftarkan melalui Firebase.
+      </div>
+    </div>
+
+    <div class="login-foot" id="loginFoot" style="margin-top:14px">
+      SIWARGA RT · v1.1
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     APLIKASI UTAMA
+     ============================================================ -->
+<header>
+  <div class="brand">
+    <div class="logo" id="headerIcon">🏠</div>
+    <div class="tt">
+      <h1 id="headerTitle">Beranda</h1>
+      <p id="headerSub">RT 03 / RW 02 · Desa Babakansari</p>
+    </div>
+    <div class="hbadge"><b id="totalBadge">0</b>jiwa</div>
+  </div>
+</header>
+
+<main>
+  <section id="page-beranda" class="page active"></section>
+  <section id="page-warga" class="page"></section>
+  <section id="page-kk" class="page"></section>
+  <section id="page-stat" class="page"></section>
+  <section id="page-form" class="page"></section>
+  <section id="page-lain" class="page"></section>
+</main>
+
+<button class="fab" id="fab">+</button>
+
+<div class="sheet" id="sheet"><div class="sheet-inner" id="sheetInner"></div></div>
+<div class="toast" id="toast"></div>
+
+<nav class="bottom">
+  <button data-nav="beranda" class="active"><span class="ic">🏠</span>Beranda</button>
+  <button data-nav="warga"><span class="ic">👥</span>Warga</button>
+  <button data-nav="kk"><span class="ic">👨‍👩‍👧</span>KK</button>
+  <button data-nav="stat"><span class="ic">📊</span>Statistik</button>
+  <button data-nav="lain"><span class="ic">⚙️</span>Lainnya</button>
+</nav>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import { getFirestore, collection, getDocs, doc, writeBatch } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+const firebaseConfig = {
+  apiKey: "AIzaSyDOYDB5Wt_3mK_QmdjnxELYGRUS9aX34dE",
+  authDomain: "siwarga-rt03-rw02-61283.firebaseapp.com",
+  projectId: "siwarga-rt03-rw02-61283",
+  storageBucket: "siwarga-rt03-rw02-61283.firebasestorage.app",
+  messagingSenderId: "949040583199",
+  appId: "1:949040583199:web:2a9547c71a026e8db97b2a"
+};
+const firebaseApp = initializeApp(firebaseConfig);
+const auth = getAuth(firebaseApp);
+const firestore = getFirestore(firebaseApp);
+let cloudReady = false;
+let cloudSaveTimer = null;
+/* =========================================================
+   AUTENTIKASI
+   ========================================================= */
+function togglePw(id, btn){
+  const inp=document.getElementById(id); if(!inp) return;
+  if(inp.type==='password'){inp.type='text';btn.textContent='🙈';}
+  else{inp.type='password';btn.textContent='👁';}
+}
+function pesanAuth(err){
+  const map={'auth/email-already-in-use':'Email sudah terdaftar. Silakan masuk.','auth/invalid-email':'Format email tidak valid.','auth/weak-password':'Kata sandi minimal 6 karakter.','auth/invalid-credential':'Email atau kata sandi salah.','auth/user-not-found':'Akun tidak ditemukan.','auth/wrong-password':'Kata sandi salah.','auth/network-request-failed':'Koneksi internet bermasalah.'};
+  return map[err.code]||('Gagal: '+(err.message||'silakan coba lagi'));
+}
+function tampilLogin(){
+  document.getElementById('loginLogin').style.display='block';
+  const f=document.getElementById('loginFoot');
+  if(f) f.textContent='SIWARGA RT · Login Firebase';
+}
+async function ambilDataCloud(){
+  const u=auth.currentUser;if(!u)throw new Error('Belum login.');
+  const ref=collection(firestore,'pengurus',u.uid,'warga');const snap=await getDocs(ref);
+  return snap.docs.map(x=>({...x.data(),id:x.id}));
+}
+async function simpanDataCloud(){
+  const u=auth.currentUser;if(!u||!cloudReady)return;
+  const ref=collection(firestore,'pengurus',u.uid,'warga');const snap=await getDocs(ref);
+  const wanted=new Set(DB.map(x=>String(x.id)));const ops=[];
+  DB.forEach(x=>ops.push({type:'set',id:String(x.id),data:x}));
+  snap.docs.forEach(x=>{if(!wanted.has(x.id))ops.push({type:'delete',id:x.id});});
+  for(let i=0;i<ops.length;i+=450){const batch=writeBatch(firestore);ops.slice(i,i+450).forEach(op=>{const target=doc(firestore,'pengurus',u.uid,'warga',op.id);if(op.type==='set')batch.set(target,op.data);else batch.delete(target);});await batch.commit();}
+}
+async function muatDataSetelahLogin(){
+  cloudReady=false;const lokal=ls.get(KEY,[]);const online=await ambilDataCloud();
+  if(online.length){DB=online.filter(cocokLokasi).map(d=>({...d,rt:LOKASI.rt,rw:LOKASI.rw}));}
+  else{DB=Array.isArray(lokal)?lokal.filter(cocokLokasi).map(d=>({...d,rt:LOKASI.rt,rw:LOKASI.rw})):[];}
+  localStorage.setItem(KEY,JSON.stringify(DB));cloudReady=true;
+  if(!online.length&&DB.length)await simpanDataCloud();
+  render();
+}
+function initLogin(){
+  const overlay=document.getElementById('loginScreen');
+  document.querySelectorAll('[data-eye]').forEach(btn=>btn.onclick=()=>togglePw(btn.dataset.eye,btn));
+  tampilLogin();
+  document.body.style.overflow='hidden';
+
+  document.getElementById('btnLogin').onclick=async()=>{
+    const email=document.getElementById('loginEmail').value.trim();
+    const pw=document.getElementById('loginPw').value;
+    const msg=document.getElementById('loginMsg');
+    msg.textContent='';
+    if(!email||!pw){msg.textContent='Masukkan email dan kata sandi.';return;}
+    try{
+      await signInWithEmailAndPassword(auth,email,pw);
+    }catch(e){
+      msg.textContent=pesanAuth(e);
+    }
+  };
+
+  onAuthStateChanged(auth,async user=>{
+    if(!user){
+      cloudReady=false;
+      overlay.classList.remove('hide');
+      document.body.style.overflow='hidden';
+      return;
+    }
+    try{
+      await muatDataSetelahLogin();
+      overlay.classList.add('hide');
+      document.body.style.overflow='';
+      toast('Berhasil masuk ke SIWARGA.');
+    }catch(e){
+      cloudReady=false;
+      overlay.classList.remove('hide');
+      document.body.style.overflow='hidden';
+      document.getElementById('loginMsg').textContent='Gagal memuat database online: '+e.message;
+    }
+  });
+}
+async function logout(){if(!confirm('Keluar dari aplikasi SIWARGA?'))return;cloudReady=false;await signOut(auth);location.reload();}
+
+/* =========================================================
+   WILAYAH
+   ========================================================= */
+const LOKASI = { rt: '03', rw: '02', desa: 'Desa Babakansari', kecamatan: 'Sukaluyu', kabupaten: 'Cianjur' };
+const LABEL_WILAYAH = 'RT ' + LOKASI.rt + ' / RW ' + LOKASI.rw + ' — ' + LOKASI.desa + ', Kec. ' + LOKASI.kecamatan + ', Kab. ' + LOKASI.kabupaten;
+
+/* =========================================================
+   KONSTANTA
+   ========================================================= */
+const AGAMA = ['Islam','Kristen','Katolik','Hindu','Buddha','Konghucu','Lainnya'];
+const STATUS_KAWIN = ['Belum Kawin','Kawin','Cerai Hidup','Cerai Mati'];
+const PENDIDIKAN = ['Tidak/Belum Sekolah','SD','SMP','SMA/SMK','D1-D3','S1','S2','S3'];
+const HUNIAN = ['Milik Sendiri','Kontrak/Sewa','Bebas Sewa','Kos','Menumpang'];
+const KEY = 'pendataan_penduduk_rt03_rw02_banyuresmi_v1';
+
+const KATEGORI_FILTER = [
+  {id:'semua', label:'Semua'},
+  {id:'L',     label:'Laki-laki'},
+  {id:'P',     label:'Perempuan'},
+  {id:'anak',  label:'Anak (0–17)'},
+  {id:'lansia',label:'Lansia (60+)'},
+  {id:'nohp',  label:'Belum ada HP'}
+];
+
+const HEADER_INFO = {
+  beranda: {icon:'🏠', title:'Beranda', sub:'Ringkasan data & aktivitas'},
+  warga:   {icon:'👥', title:'Data Warga', sub:''},
+  kk:      {icon:'👨‍👩‍👧', title:'Kartu Keluarga', sub:''},
+  stat:    {icon:'📊', title:'Statistik', sub:'Rekap & grafik wilayah'},
+  form:    {icon:'📝', title:'Formulir Warga', sub:''},
+  lain:    {icon:'⚙️', title:'Lainnya', sub:'Ekspor, impor & pengaturan'}
+};
+
+/* =========================================================
+   STATE
+   ========================================================= */
+let DB = [];
+let halaman = 'beranda';
+let prevPage = 'beranda';
+let editId = null;
+let prefillKK = '';
+let cariWarga = '';
+let filterWarga = 'semua';
+let cariKK = '';
+let sortKK = 'nama';
+
+const ls = {
+  get(k,d){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; }catch(e){ return d; } },
+  set(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+};
+
+function cocokLokasi(d){
+  // Data lama tanpa kolom RT/RW dianggap berasal dari wilayah aplikasi ini.
+  const rt = d.rt == null || d.rt === '' ? LOKASI.rt : d.rt;
+  const rw = d.rw == null || d.rw === '' ? LOKASI.rw : d.rw;
+  return parseInt(rt,10) === parseInt(LOKASI.rt,10) &&
+         parseInt(rw,10) === parseInt(LOKASI.rw,10);
+}
+
+function muat(){
+  DB=ls.get(KEY,[]);if(!Array.isArray(DB))DB=[];
+  DB=DB.filter(cocokLokasi).map(d=>({...d,rt:LOKASI.rt,rw:LOKASI.rw}));
+}
+function simpanDB(){
+  try{localStorage.setItem(KEY,JSON.stringify(DB));if(cloudReady){clearTimeout(cloudSaveTimer);cloudSaveTimer=setTimeout(async()=>{try{await simpanDataCloud();toast('Data tersimpan di perangkat dan Firebase.');}catch(e){toast('Tersimpan lokal, sinkronisasi cloud gagal. Periksa internet.');console.error(e);}},500);}return true;}
+  catch(e){toast('Penyimpanan gagal. Memori perangkat mungkin penuh. Segera ekspor cadangan.');return false;}
+}
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
+
+/* =========================================================
+   UTIL
+   ========================================================= */
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function umur(tgl){
+  if(!tgl) return null;
+  const b = new Date(tgl + 'T00:00:00');
+  if(isNaN(b)) return null;
+  const n = new Date();
+  let u = n.getFullYear() - b.getFullYear();
+  const m = n.getMonth() - b.getMonth();
+  if(m < 0 || (m === 0 && n.getDate() < b.getDate())) u--;
+  return (u >= 0 && u < 130) ? u : null;
+}
+
+function tglID(tgl){
+  if(!tgl) return '-';
+  const d = new Date(tgl + 'T00:00:00');
+  if(isNaN(d)) return tgl;
+  const bln = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  return d.getDate() + ' ' + bln[d.getMonth()] + ' ' + d.getFullYear();
+}
+
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._tm);
+  t._tm = setTimeout(()=>t.classList.remove('show'), 2400);
+}
+
+function greeting(){
+  const j = new Date().getHours();
+  if(j < 11) return 'Selamat pagi';
+  if(j < 15) return 'Selamat siang';
+  if(j < 18) return 'Selamat sore';
+  return 'Selamat malam';
+}
+
+function greetingEmoji(){
+  const j = new Date().getHours();
+  if(j < 11) return '🌅';
+  if(j < 15) return '☀️';
+  if(j < 18) return '🌤️';
+  return '🌙';
+}
+
+function tglSekarang(){
+  const hari = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+  const bln = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+  const d = new Date();
+  return hari[d.getDay()] + ', ' + d.getDate() + ' ' + bln[d.getMonth()] + ' ' + d.getFullYear();
+}
+
+function timeAgo(iso){
+  if(!iso) return '';
+  const diff = Date.now() - new Date(iso).getTime();
+  if(diff < 0) return 'Baru saja';
+  const mins = Math.floor(diff / 60000);
+  if(mins < 1) return 'Baru saja';
+  if(mins < 60) return mins + ' menit lalu';
+  const hrs = Math.floor(mins / 60);
+  if(hrs < 24) return hrs + ' jam lalu';
+  const days = Math.floor(hrs / 24);
+  if(days === 1) return 'Kemarin';
+  if(days < 7) return days + ' hari lalu';
+  const d = new Date(iso);
+  return d.getDate() + '/' + (d.getMonth()+1) + '/' + d.getFullYear();
+}
+
+function getKKGroups(){
+  const map = {};
+  DB.forEach(d => {
+    const kk = (d.kk || '').trim();
+    if(!kk) return;
+    if(!map[kk]) map[kk] = { no: kk, anggota: [], alamat: '', lastUpdate: '' };
+    map[kk].anggota.push(d);
+    if(!map[kk].alamat && d.alamat) map[kk].alamat = d.alamat;
+    const t = d.diubah || d.dibuat || '';
+    if(t > map[kk].lastUpdate) map[kk].lastUpdate = t;
+  });
+  const arr = Object.values(map);
+  arr.forEach(g => { g.kepala = kepalaPerkiraan(g.anggota); });
+  return arr;
+}
+
+function kepalaPerkiraan(anggota){
+  const ditetapkan = anggota.find(d => d.peranKK === 'Kepala Keluarga');
+  if(ditetapkan) return ditetapkan;
+  let best = null, bestUsia = -1;
+  anggota.forEach(d => {
+    const u = umur(d.tglLahir);
+    const v = u === null ? 0 : u;
+    if(v > bestUsia){ bestUsia = v; best = d; }
+  });
+  return best || anggota[0] || null;
+}
+
+function kelengkapan(d){
+  const cek = [
+    d.nik && d.nik.length === 16,
+    d.kk && d.kk.length === 16,
+    d.alamat && d.alamat.trim().length > 0,
+    d.hp && d.hp.trim().length > 0,
+    d.pekerjaan && d.pekerjaan.trim().length > 0
+  ];
+  const filled = cek.filter(Boolean).length;
+  return { filled, total: 5, pct: Math.round(filled/5*100) };
+}
+
+/* =========================================================
+   NAVIGASI
+   ========================================================= */
+function go(p){
+  if(p !== 'form'){ prefillKK = ''; }
+  prevPage = halaman === 'form' && p === 'form' ? prevPage : halaman;
+  halaman = p;
+  document.querySelectorAll('.page').forEach(el=>{
+    el.classList.toggle('active', el.id === 'page-' + p);
+  });
+  document.querySelectorAll('nav.bottom button').forEach(b=>{
+    b.classList.toggle('active', b.dataset.nav === p);
+  });
+  updateHeaderInfo();
+  updateFAB();
+  window.scrollTo({top:0,behavior:'instant'});
+  render();
+}
+
+document.querySelectorAll('nav.bottom button').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    if(b.dataset.nav === 'form') editId = null;
+    go(b.dataset.nav);
+  });
+});
+
+document.getElementById('fab').addEventListener('click', ()=>{
+  editId = null;
+  prefillKK = '';
+  go('form');
+});
+
+function updateHeaderInfo(){
+  const info = HEADER_INFO[halaman] || HEADER_INFO.beranda;
+  document.getElementById('headerIcon').textContent = info.icon;
+  document.getElementById('headerTitle').textContent = info.title;
+  const sub = halaman === 'beranda' ? tglSekarang()
+    : halaman === 'warga' ? DB.length + ' jiwa · ' + LABEL_WILAYAH
+    : halaman === 'kk' ? getKKGroups().length + ' KK terdata'
+    : info.sub || LABEL_WILAYAH;
+  document.getElementById('headerSub').textContent = sub;
+  document.getElementById('totalBadge').textContent = DB.length;
+}
+
+function updateFAB(){
+  const fab = document.getElementById('fab');
+  const show = ['beranda','warga','kk','stat'].includes(halaman);
+  fab.classList.toggle('hide', !show);
+}
+
+function render(){
+  updateHeaderInfo();
+  updateFAB();
+  if(halaman === 'beranda') renderBeranda();
+  else if(halaman === 'warga') renderWarga();
+  else if(halaman === 'kk') renderKK();
+  else if(halaman === 'stat') renderStat();
+  else if(halaman === 'form') renderForm();
+  else if(halaman === 'lain') renderLain();
+}
+
+/* =========================================================
+   RENDER: BERANDA
+   ========================================================= */
+function renderBeranda(){
+  const el = document.getElementById('page-beranda');
+  const total = DB.length;
+  const kkGroups = getKKGroups();
+  const kkCount = kkGroups.length;
+  const L = DB.filter(d=>d.jk==='L').length;
+  const P = DB.filter(d=>d.jk==='P').length;
+  const persenL = total ? Math.round(L/total*100) : 0;
+  const persenP = total ? 100 - persenL : 0;
+  const degL = total ? (L/total*360) : 0;
+
+  const alerts = buildAlerts();
+  const activity = getRecentActivity(5);
+
+  // === RUNNING TEXT ===
+  const greet = greeting();
+  const emoji = greetingEmoji();
+  const pesanBerjalan =
+    `${greet} ${emoji}` +
+    `<span class="sep">•</span>` +
+    `Selamat datang di Sistem Pendataan Penduduk ${LABEL_WILAYAH}` +
+    `<span class="sep">•</span>` +
+    `Semoga hari Anda menyenangkan` +
+    `<span class="sep">•</span>` +
+    `${tglSekarang()}` +
+    `<span class="sep">•</span>` +
+    `Silakan kelola data warga dengan teliti`;
+
+  el.innerHTML = `
+    <div class="card greet-card">
+      <div class="greet-label">
+        <span class="greet-live">LIVE</span>
+        <span style="opacity:.7">·</span>
+        <span>SAMBUTAN</span>
+      </div>
+      <div class="marquee" aria-label="Sambutan berjalan">
+        <div class="marquee-track">
+          <span class="h2">${pesanBerjalan}</span>
+        </div>
+      </div>
+      <div class="greet-date">📅 ${tglSekarang()}</div>
+    </div>
+
+    ${total === 0 ? `
+      <div class="card" style="text-align:center;padding:34px 20px">
+        <div style="font-size:44px;margin-bottom:12px">📋</div>
+        <h3 style="font-size:15px;font-weight:800;margin-bottom:6px">Belum ada data warga</h3>
+        <p style="font-size:12.5px;color:#64748b;line-height:1.6;margin:0 0 16px">
+          Mulai pendataan dengan menambahkan warga pertama di wilayah ini.
+        </p>
+        <button class="btn" onclick="document.getElementById('fab').click()">➕ Tambah Warga Pertama</button>
+      </div>
+    ` : `
+      <div class="statgrid">
+        <div class="stat" data-drill="all">
+          <div class="arrow">›</div>
+          <div class="lb">Total Jiwa</div>
+          <div class="vl" style="color:#0f766e">${total}</div>
+          <div class="sb">warga terdata</div>
+        </div>
+        <div class="stat" data-drill="kk">
+          <div class="arrow">›</div>
+          <div class="lb">Kepala Keluarga</div>
+          <div class="vl" style="color:#2563eb">${kkCount}</div>
+          <div class="sb">nomor KK unik</div>
+        </div>
+        <div class="stat" data-drill="L">
+          <div class="arrow">›</div>
+          <div class="lb">Laki-laki</div>
+          <div class="vl" style="color:#2563eb">${L}</div>
+          <div class="sb">${persenL}% dari total</div>
+        </div>
+        <div class="stat" data-drill="P">
+          <div class="arrow">›</div>
+          <div class="lb">Perempuan</div>
+          <div class="vl" style="color:#db2777">${P}</div>
+          <div class="sb">${persenP}% dari total</div>
+        </div>
+      </div>
+
+      <div class="aksi">
+        <div class="a" data-aksi="warga">
+          <span class="ic">➕</span>
+          <div class="lbl">Warga</div>
+        </div>
+        <div class="a" data-aksi="kk">
+          <span class="ic">👨‍👩‍👧</span>
+          <div class="lbl">KK</div>
+        </div>
+        <div class="a" data-aksi="cari">
+          <span class="ic">🔍</span>
+          <div class="lbl">Cari</div>
+        </div>
+        <div class="a" data-aksi="ekspor">
+          <span class="ic">📤</span>
+          <div class="lbl">Ekspor</div>
+        </div>
+      </div>
+
+      ${alerts.length ? alerts.map(a=>`
+        <div class="alert ${a.type}">
+          <div class="ai">${a.icon}</div>
+          <div>${a.text}</div>
+        </div>
+      `).join('') : ''}
+
+      ${L + P > 0 ? `
+        <div class="mini-chart">
+          <div class="ttl">Komposisi Jenis Kelamin</div>
+          <div class="donut-wrap">
+            <div class="donut" style="background:conic-gradient(#3b82f6 0deg ${degL}deg, #ec4899 ${degL}deg 360deg)">
+              <div class="donut-lbl">${total}</div>
+            </div>
+            <div class="donut-info">
+              <div class="row"><span class="dot" style="background:#3b82f6"></span>Laki-laki · ${L} (${persenL}%)</div>
+              <div class="row"><span class="dot" style="background:#ec4899"></span>Perempuan · ${P} (${persenP}%)</div>
+            </div>
+          </div>
+        </div>
+      ` : ''}
+
+      <div class="aktivitas">
+        <div class="ttl">Aktivitas Terbaru</div>
+        ${activity.length === 0 ? `<div style="font-size:12px;color:#94a3b8">Belum ada aktivitas.</div>` :
+          activity.map(a=>{
+            const d = a.d;
+            return `<div class="akt-item" data-pid="${d.id}">
+              <div class="av ${d.jk==='P'?'P':'L'}">${esc((d.nama||'?').charAt(0).toUpperCase())}</div>
+              <div class="txt"><b>${esc(d.nama||'(tanpa nama)')}</b><div>${a.type==='edit'?'data diperbarui':'ditambahkan'}</div></div>
+              <div class="time">${timeAgo(a.time)}</div>
+            </div>`;
+          }).join('')}
+      </div>
+
+      <div class="foot">Ketuk kartu untuk melihat detail · FAB (+) untuk menambah warga</div>
+    `}
+  `;
+
+  el.querySelectorAll('[data-drill]').forEach(c=>{
+    c.addEventListener('click', ()=>{
+      const t = c.dataset.drill;
+      if(t === 'kk'){ go('kk'); return; }
+      filterWarga = t; cariWarga = ''; go('warga');
+    });
+  });
+
+  el.querySelectorAll('[data-aksi]').forEach(a=>{
+    a.addEventListener('click', ()=>{
+      const t = a.dataset.aksi;
+      if(t === 'warga'){ document.getElementById('fab').click(); }
+      else if(t === 'kk'){ go('kk'); }
+      else if(t === 'cari'){ filterWarga = 'semua'; cariWarga = ''; go('warga'); }
+      else if(t === 'ekspor'){ go('lain'); }
+    });
+  });
+
+  el.querySelectorAll('[data-pid]').forEach(i=>{
+    i.addEventListener('click', ()=>bukaDetail(i.dataset.pid));
+  });
+}
+
+function buildAlerts(){
+  const alerts = [];
+  const tanpaHP = DB.filter(d => !d.hp || !d.hp.trim()).length;
+  if(tanpaHP > 0){
+    alerts.push({type:'', icon:'📱', text:`<b>${tanpaHP} warga belum isi No. HP.</b> Lengkapi agar mudah dihubungi.`});
+  }
+  const tanpaAlamat = DB.filter(d => !d.alamat || !d.alamat.trim()).length;
+  if(tanpaAlamat > 0){
+    alerts.push({type:'', icon:'📍', text:`<b>${tanpaAlamat} warga belum isi alamat.</b>`});
+  }
+  const tanpaKK = DB.filter(d => !d.kk || !d.kk.trim()).length;
+  if(tanpaKK > 0){
+    alerts.push({type:'danger', icon:'⚠️', text:`<b>${tanpaKK} warga belum terkait KK.</b>`});
+  }
+  const now = new Date();
+  const ultah = DB.filter(d => {
+    if(!d.tglLahir) return false;
+    const t = new Date(d.tglLahir + 'T00:00:00');
+    return !isNaN(t) && t.getMonth() === now.getMonth();
+  });
+  if(ultah.length > 0){
+    const names = ultah.slice(0,3).map(d=>d.nama).filter(Boolean).join(', ');
+    alerts.push({type:'info', icon:'🎂', text:`<b>${ultah.length} warga berulang tahun bulan ini.</b> ${esc(names)}${ultah.length>3?' dll.':''}`});
+  }
+  return alerts;
+}
+
+function getRecentActivity(limit){
+  return DB.map(d => ({
+    d,
+    time: d.diubah || d.dibuat || '',
+    type: d.diubah ? 'edit' : 'add'
+  }))
+  .filter(x => x.time)
+  .sort((a,b) => new Date(b.time) - new Date(a.time))
+  .slice(0, limit);
+}
+
+/* =========================================================
+   RENDER: WARGA
+   ========================================================= */
+function renderWarga(){
+  const el = document.getElementById('page-warga');
+
+  el.innerHTML = `
+    <div class="wilayah">
+      <div class="wi">📍</div>
+      <div class="wt">
+        <b>${LABEL_WILAYAH}</b>
+        <span>Data warga khusus wilayah ini</span>
+      </div>
+    </div>
+
+    <input class="search" id="cariWarga" type="search"
+      placeholder="🔍 Cari nama, NIK, KK, atau alamat..." value="${esc(cariWarga)}">
+
+    <div class="chips" id="chipWarga">
+      ${KATEGORI_FILTER.map(k=>`
+        <div class="chip ${filterWarga===k.id?'on':''}" data-f="${k.id}">${k.label}</div>
+      `).join('')}
+    </div>
+
+    <div id="listWarga"></div>
+  `;
+
+  const inp = el.querySelector('#cariWarga');
+  inp.addEventListener('input', e=>{
+    cariWarga = e.target.value;
+    renderListWarga();
+  });
+
+  el.querySelectorAll('[data-f]').forEach(c=>{
+    c.addEventListener('click', ()=>{
+      filterWarga = c.dataset.f;
+      renderWarga();
+    });
+  });
+
+  renderListWarga();
+}
+
+function cocokFilter(d){
+  const u = umur(d.tglLahir);
+  if(filterWarga === 'L') return d.jk === 'L';
+  if(filterWarga === 'P') return d.jk === 'P';
+  if(filterWarga === 'anak') return u !== null && u <= 17;
+  if(filterWarga === 'lansia') return u !== null && u >= 60;
+  if(filterWarga === 'nohp') return !d.hp || !d.hp.trim();
+  return true;
+}
+
+function renderListWarga(){
+  const wrap = document.getElementById('listWarga');
+  if(!wrap) return;
+
+  let list = DB.filter(cocokFilter);
+  if(cariWarga){
+    const q = cariWarga.toLowerCase();
+    list = list.filter(d =>
+      (d.nama||'').toLowerCase().includes(q) ||
+      (d.nik||'').includes(q) ||
+      (d.kk||'').includes(q) ||
+      (d.alamat||'').toLowerCase().includes(q) ||
+      (d.pekerjaan||'').toLowerCase().includes(q)
+    );
+  }
+  list.sort((a,b)=>(a.nama||'').localeCompare(b.nama||''));
+
+  if(DB.length === 0){
+    wrap.innerHTML = `<div class="empty"><div>📋</div>
+      Belum ada data warga.<br>Ketuk tombol <b>+</b> di kanan bawah untuk menambah.</div>`;
+    return;
+  }
+  if(list.length === 0){
+    wrap.innerHTML = `<div class="empty"><div>🔍</div>Data tidak ditemukan.<br>Coba ubah filter atau kata kunci.</div>`;
+    return;
+  }
+
+  const kkGroups = getKKGroups();
+  wrap.innerHTML = list.map(d=>wargaCardHTML(d, kkGroups)).join('') +
+    `<div class="foot">Menampilkan ${list.length} dari ${DB.length} warga</div>`;
+
+  wrap.querySelectorAll('[data-id]').forEach(i=>{
+    i.addEventListener('click', ()=>bukaDetail(i.dataset.id));
+  });
+}
+
+function wargaCardHTML(d, kkGroups){
+  const u = umur(d.tglLahir);
+  const grp = d.kk ? kkGroups.find(g=>g.no===d.kk) : null;
+  const isKepala = grp && grp.kepala && grp.kepala.id === d.id;
+  const kl = kelengkapan(d);
+
+  const badges = [];
+  if(isKepala) badges.push('<span class="badge head">👑 Kepala Keluarga</span>');
+  if(d.hp && d.hp.trim()) badges.push('<span class="badge hp">📱 Ada HP</span>');
+  if(d.alamat && d.alamat.trim()) badges.push('<span class="badge alamat">📍 Alamat lengkap</span>');
+
+  return `<div class="warga-card" data-id="${d.id}">
+    <div class="top">
+      <div class="wav ${d.jk==='P'?'P':'L'}">
+        ${esc((d.nama||'?').charAt(0).toUpperCase())}
+        ${isKepala ? '<div class="head-star">👑</div>' : ''}
+      </div>
+      <div class="wt">
+        <b>${esc(d.nama||'(tanpa nama)')}</b>
+        <small>NIK ${esc(d.nik||'-')}</small>
+      </div>
+      <div class="age"><b>${u===null?'-':u}</b>thn</div>
+    </div>
+    ${badges.length ? `<div class="badges">${badges.join('')}</div>` : ''}
+    <div class="completeness">
+      <span>Kelengkapan</span>
+      <div class="dots">
+        ${[0,1,2,3,4].map(i => `<div class="d ${i<kl.filled?'on':''}"></div>`).join('')}
+      </div>
+      <span class="pct">${kl.pct}%</span>
+    </div>
+  </div>`;
+}
+
+/* =========================================================
+   RENDER: KK
+   ========================================================= */
+function renderKK(){
+  const el = document.getElementById('page-kk');
+  const groups = getKKGroups();
+
+  if(DB.length === 0){
+    el.innerHTML = `<div class="empty"><div>👨‍👩‍👧</div>
+      Belum ada KK terdata.<br>Tambahkan warga pertama melalui tombol <b>+</b>.</div>`;
+    return;
+  }
+
+  let list = groups.slice();
+  if(cariKK){
+    const q = cariKK.toLowerCase();
+    list = list.filter(g =>
+      (g.kepala?.nama||'').toLowerCase().includes(q) ||
+      g.no.includes(q) ||
+      (g.alamat||'').toLowerCase().includes(q)
+    );
+  }
+
+  if(sortKK === 'nama'){
+    list.sort((a,b) => (a.kepala?.nama||'').localeCompare(b.kepala?.nama||''));
+  } else if(sortKK === 'anggota'){
+    list.sort((a,b) => b.anggota.length - a.anggota.length);
+  } else if(sortKK === 'terbaru'){
+    list.sort((a,b) => (b.lastUpdate||'').localeCompare(a.lastUpdate||''));
+  }
+
+  el.innerHTML = `
+    <div class="wilayah">
+      <div class="wi">👨‍👩‍👧</div>
+      <div class="wt">
+        <b>${groups.length} Kartu Keluarga</b>
+        <span>Total ${DB.length} jiwa terdata</span>
+      </div>
+    </div>
+
+    <input class="search" id="cariKK" type="search"
+      placeholder="🔍 Cari nama kepala keluarga atau No. KK..." value="${esc(cariKK)}">
+
+    <div class="chips" id="chipKK">
+      <div class="chip ${sortKK==='nama'?'on':''}" data-sort="nama">Nama</div>
+      <div class="chip ${sortKK==='anggota'?'on':''}" data-sort="anggota">Anggota Terbanyak</div>
+      <div class="chip ${sortKK==='terbaru'?'on':''}" data-sort="terbaru">Terbaru</div>
+    </div>
+
+    <div id="listKK"></div>
+  `;
+
+  const inp = el.querySelector('#cariKK');
+  inp.addEventListener('input', e=>{
+    cariKK = e.target.value;
+    renderKK();
+  });
+
+  el.querySelectorAll('[data-sort]').forEach(c=>{
+    c.addEventListener('click', ()=>{
+      sortKK = c.dataset.sort;
+      renderKK();
+    });
+  });
+
+  const wrap = el.querySelector('#listKK');
+  if(list.length === 0){
+    wrap.innerHTML = `<div class="empty"><div>🔍</div>Tidak ada KK yang cocok.</div>`;
+    return;
+  }
+
+  wrap.innerHTML = list.map(g=>kkCardHTML(g)).join('') +
+    `<div class="foot">Menampilkan ${list.length} dari ${groups.length} KK</div>`;
+
+  wrap.querySelectorAll('[data-kk]').forEach(i=>{
+    i.addEventListener('click', ()=>bukaKKDetail(i.dataset.kk));
+  });
+}
+
+function kkCardHTML(g){
+  const kepala = g.kepala;
+  const avatars = g.anggota.slice(0, 4).map(d =>
+    `<div class="mini-av ${d.jk==='P'?'P':'L'}">${esc((d.nama||'?').charAt(0).toUpperCase())}</div>`
+  ).join('');
+  const more = g.anggota.length > 4 ? `<div class="more">+${g.anggota.length-4}</div>` : '';
+
+  return `<div class="kk-card" data-kk="${esc(g.no)}">
+    <div class="head">
+      <div class="kav">🏠</div>
+      <div class="kt">
+        <b>${esc(kepala?.nama || '(tanpa nama)')}</b>
+        <small>KK ${esc(g.no)}</small>
+      </div>
+      <div class="cnt">${g.anggota.length} org</div>
+    </div>
+    <div class="addr">📍 ${esc(g.alamat || 'Alamat belum diisi')}</div>
+    <div class="avatars">${avatars}${more}<div class="go">›</div></div>
+  </div>`;
+}
+
+function bukaDetail(id){
+  const d = DB.find(x=>x.id===id);
+  if(!d) return;
+  const u = umur(d.tglLahir);
+  const sheet = document.getElementById('sheet');
+  const inner = document.getElementById('sheetInner');
+
+  const rows = [
+    ['NIK', d.nik],
+    ['No. Kartu Keluarga', d.kk],
+    ['Jenis Kelamin', d.jk === 'L' ? 'Laki-laki' : d.jk === 'P' ? 'Perempuan' : '-'],
+    ['Tanggal Lahir', tglID(d.tglLahir)],
+    ['Usia', u === null ? '-' : u + ' tahun'],
+    ['Agama', d.agama],
+    ['Status Perkawinan', d.statusKawin],
+    ['Pendidikan', d.pendidikan],
+    ['Pekerjaan', d.pekerjaan],
+    ['Wilayah', LABEL_WILAYAH],
+    ['Alamat', d.alamat],
+    ['Status Hunian', d.hunian],
+    ['No. HP', d.hp],
+    ['Catatan', d.catatan]
+  ];
+
+  inner.innerHTML = `
+    <div class="grab"></div>
+    <div class="detail-head">
+      <div class="avatar ${d.jk==='P'?'P':'L'}">${esc((d.nama||'?').charAt(0).toUpperCase())}</div>
+      <div style="flex:1;min-width:0">
+        <h3>${esc(d.nama||'(tanpa nama)')}</h3>
+        <p>${esc(d.pekerjaan||'Pekerjaan belum diisi')}</p>
+      </div>
+    </div>
+    <div style="margin-bottom:14px">
+      ${rows.map(r=>`<div class="dl"><div class="dk">${esc(r[0])}</div>
+        <div class="dv">${esc(r[1] || '-')}</div></div>`).join('')}
+    </div>
+    <div class="btnrow">
+      <button class="btn ghost" id="btnEdit">✏️ Edit</button>
+      <button class="btn danger" id="btnHapus">🗑️ Hapus</button>
+    </div>
+    <button class="btn gray" id="btnTutup" style="margin-top:10px">Tutup</button>
+  `;
+
+  sheet.classList.add('open');
+  inner.scrollTop = 0;
+
+  document.getElementById('btnTutup').onclick = tutupSheet;
+  sheet.onclick = (e)=>{ if(e.target === sheet) tutupSheet(); };
+  document.getElementById('btnEdit').onclick = ()=>{
+    tutupSheet();
+    editId = id;
+    prefillKK = '';
+    go('form');
+  };
+  document.getElementById('btnHapus').onclick = ()=>{
+    if(confirm('Hapus data warga "' + (d.nama||'-') + '"?\nTindakan ini tidak dapat dibatalkan.')){
+      DB = DB.filter(x=>x.id !== id);
+      simpanDB(); tutupSheet(); render();
+      toast('Data warga dihapus');
+    }
+  };
+}
+
+function bukaKKDetail(kkNo){
+  const anggota = DB.filter(d => d.kk === kkNo)
+    .sort((a,b) => (a.nama||'').localeCompare(b.nama||''));
+  if(!anggota.length) return;
+  const kepala = kepalaPerkiraan(anggota);
+  const alamat = anggota.find(d=>d.alamat)?.alamat || '-';
+
+  const sheet = document.getElementById('sheet');
+  const inner = document.getElementById('sheetInner');
+
+  inner.innerHTML = `
+    <div class="grab"></div>
+    <div style="display:flex;gap:12px;align-items:center;margin-bottom:16px">
+      <div style="width:52px;height:52px;border-radius:14px;background:#e6f4f1;display:grid;place-items:center;font-size:24px;flex:0 0 auto">🏠</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:10px;font-weight:800;color:#0f766e;text-transform:uppercase;letter-spacing:.6px;margin-bottom:3px">Kartu Keluarga</div>
+        <h3 style="font-size:16px;font-weight:800;line-height:1.3;margin-bottom:3px">${esc(kepala?.nama||'(tanpa nama)')}</h3>
+        <p style="font-size:11px;color:#64748b;margin:0;font-weight:600">KK ${esc(kkNo)} · ${anggota.length} anggota</p>
+      </div>
+    </div>
+    <div style="font-size:12.5px;color:#64748b;margin-bottom:16px;padding:11px 13px;background:#f8fbfa;border-radius:11px;line-height:1.5">
+      📍 ${esc(alamat)}
+    </div>
+    <div style="font-size:10.5px;font-weight:800;color:#64748b;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Anggota Keluarga</div>
+    ${anggota.map(d => {
+      const u = umur(d.tglLahir);
+      const isKep = d.id === kepala?.id;
+      return `<div class="item" data-pid="${d.id}">
+        <div class="avatar ${d.jk==='P'?'P':'L'}" style="width:40px;height:40px;border-radius:12px">${esc((d.nama||'?').charAt(0).toUpperCase())}</div>
+        <div class="txt">
+          <h4>${esc(d.nama||'(tanpa nama)')}${isKep ? ' 👑' : ''}</h4>
+          <p>${u===null?'-':u+' thn'} · ${d.jk==='L'?'L':'P'}${d.pekerjaan?' · '+esc(d.pekerjaan):''}</p>
+        </div>
+      </div>`;
+    }).join('')}
+    <button class="btn" id="btnTambahAnggota" style="margin-top:14px">➕ Tambah Anggota KK</button>
+    <button class="btn gray" id="btnTutupKK" style="margin-top:10px">Tutup</button>
+  `;
+
+  sheet.classList.add('open');
+  inner.scrollTop = 0;
+
+  document.getElementById('btnTutupKK').onclick = tutupSheet;
+  document.getElementById('btnTambahAnggota').onclick = ()=>{
+    tutupSheet();
+    editId = null;
+    prefillKK = kkNo;
+    go('form');
+  };
+  sheet.onclick = (e)=>{ if(e.target === sheet) tutupSheet(); };
+
+  inner.querySelectorAll('[data-pid]').forEach(i=>{
+    i.addEventListener('click', ()=>bukaDetail(i.dataset.pid));
+  });
+}
+
+function tutupSheet(){ document.getElementById('sheet').classList.remove('open'); }
+
+/* =========================================================
+   RENDER: FORM
+   ========================================================= */
+function renderForm(){
+  const el = document.getElementById('page-form');
+  const d = editId ? DB.find(x=>x.id===editId) : null;
+  const f = d || {jk:'L'};
+  const kkGroups = getKKGroups();
+
+  let preselectedKK = prefillKK || '';
+  if(d && d.kk && kkGroups.find(g=>g.no===d.kk)) preselectedKK = d.kk;
+
+  const sel = (nama, opsi, val) => `
+    <select id="f_${nama}">
+      <option value="">— Pilih —</option>
+      ${opsi.map(o=>`<option value="${esc(o)}" ${val===o?'selected':''}>${esc(o)}</option>`).join('')}
+    </select>`;
+
+  el.innerHTML = `
+    <div class="card" style="background:linear-gradient(135deg,#0f766e,#14b8a6);border:0;color:#fff">
+      <h2 style="font-size:16px;font-weight:800;margin-bottom:4px">
+        ${d ? '✏️ Edit Data Warga' : '➕ Tambah Data Warga'}
+      </h2>
+      <p style="font-size:12px;opacity:.92;margin:0;line-height:1.5">
+        ${LABEL_WILAYAH} · Kolom bertanda * wajib diisi.
+      </p>
+    </div>
+
+    <div class="section-title">Baca Dokumen Otomatis (OCR)</div>
+    <div class="card" id="ocrCard">
+      <div style="font-weight:800;font-size:13px;margin-bottom:6px">📷 Foto KTP atau Kartu Keluarga</div>
+      <div class="hint" style="margin-bottom:12px">Pilih foto yang jelas, tidak miring, dan seluruh tulisan terlihat. Hasil pembacaan perlu diperiksa sebelum disimpan.</div>
+      <input id="ocrCameraFile" type="file" accept="image/*" capture="environment" hidden>
+      <input id="ocrGalleryFile" type="file" accept="image/*" hidden>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+        <button class="btn" type="button" id="btnOCRCamera">📷 Foto Langsung</button>
+        <button class="btn" type="button" id="btnOCRGallery">🖼️ Ambil dari Galeri</button>
+      </div>
+      <div id="ocrSelected" class="hint" style="margin-bottom:10px">Belum ada foto dipilih.</div>
+      <button class="btn" type="button" id="btnOCR">🔎 Baca Dokumen</button>
+      <div id="ocrStatus" class="hint" aria-live="polite" style="margin-top:10px">Mesin OCR akan dimuat saat pertama kali digunakan. Perlu koneksi internet.</div>
+      <div id="ocrResultWrap" style="display:none;margin-top:12px">
+        <label style="display:block;font-size:11px;font-weight:800;margin-bottom:6px">HASIL TEKS OCR — BOLEH DIKOREKSI</label>
+        <textarea id="ocrText" rows="8" style="width:100%;font-size:12px" placeholder="Hasil pembacaan dokumen akan muncul di sini"></textarea>
+        <button class="btn" type="button" id="btnOCRApply" style="margin-top:8px">⬇️ Terapkan ke Formulir</button>
+      </div>
+    </div>
+
+    <div class="section-title">Identitas</div>
+    <div class="card">
+      <div class="field" id="w_nik">
+        <label>NIK *</label>
+        <input id="f_nik" type="tel" inputmode="numeric" maxlength="16"
+               placeholder="16 digit angka" value="${esc(f.nik||'')}">
+        <div class="hint">Nomor Induk Kependudukan, 16 digit sesuai KTP.</div>
+        <div class="errmsg">NIK harus 16 digit angka dan belum terdaftar.</div>
+      </div>
+      <div class="field" id="w_nama">
+        <label>Nama Lengkap *</label>
+        <input id="f_nama" type="text" placeholder="Sesuai KTP" value="${esc(f.nama||'')}">
+        <div class="errmsg">Nama lengkap wajib diisi.</div>
+      </div>
+      <div class="field">
+        <label>Jenis Kelamin *</label>
+        <div class="pills" id="f_jk">
+          <button type="button" data-jk="L" class="${f.jk!=='P'?'on':''}">👨 Laki-laki</button>
+          <button type="button" data-jk="P" class="${f.jk==='P'?'on':''}">👩 Perempuan</button>
+        </div>
+      </div>
+      <div class="field" id="w_tgl">
+        <label>Tanggal Lahir *</label>
+        <input id="f_tglLahir" type="date" value="${esc(f.tglLahir||'')}">
+        <div class="errmsg">Tanggal lahir wajib diisi dan tidak boleh melebihi hari ini.</div>
+      </div>
+    </div>
+
+    <div class="section-title">Kartu Keluarga</div>
+    <div class="card">
+      ${kkGroups.length ? `
+        <div class="field">
+          <label>Gabung ke KK yang sudah terdata</label>
+          <select id="f_kkExisting">
+            <option value="">— KK Baru (isi manual) —</option>
+            ${kkGroups.map(g=>{
+              const nm = g.kepala ? (g.kepala.nama||'(tanpa nama)') : '(tanpa nama)';
+              return `<option value="${esc(g.no)}" ${preselectedKK===g.no?'selected':''}>
+                KK ${esc(g.no)} — ${esc(nm)} (${g.anggota.length} anggota)
+              </option>`;
+            }).join('')}
+          </select>
+          <div class="hint">Pilih KK jika warga ini anggota keluarga yang sudah terdata. No. KK & alamat akan terisi otomatis.</div>
+        </div>
+        <div id="infoKK"></div>
+      ` : `
+        <div class="hint" style="margin-bottom:14px">
+          Belum ada KK terdata. Isi No. KK secara manual di bawah. Warga pertama akan menjadi kepala keluarga baru.
+        </div>
+      `}
+      <div class="field" id="w_kk">
+        <label>No. Kartu Keluarga</label>
+        <input id="f_kk" type="tel" inputmode="numeric" maxlength="16"
+               placeholder="16 digit angka" value="${esc(f.kk||'')}">
+        <div class="hint">Isi sama untuk anggota keluarga dalam satu KK.</div>
+        <div class="errmsg">No. KK harus 16 digit angka (boleh dikosongkan).</div>
+      </div>
+      <div class="field">
+        <label>Alamat Lengkap</label>
+        <textarea id="f_alamat" placeholder="Nama jalan, nomor rumah (tanpa RT/RW)">${esc(f.alamat||'')}</textarea>
+        <div class="hint">Contoh: Jl. Melati No. 12 — RT/RW otomatis terisi.</div>
+      </div>
+      <div class="field" style="margin-bottom:0">
+        <label>Status dalam Keluarga</label>
+        <select id="f_peranKK">
+          <option value="Anggota" ${f.peranKK!=='Kepala Keluarga'?'selected':''}>Anggota Keluarga</option>
+          <option value="Kepala Keluarga" ${f.peranKK==='Kepala Keluarga'?'selected':''}>Kepala Keluarga</option>
+        </select>
+        <div class="hint">Pilih sesuai Kartu Keluarga. Jika tidak ditentukan, aplikasi memperkirakan kepala keluarga dari usia.</div>
+      </div>
+    </div>
+
+    <div class="section-title">Data Sosial</div>
+    <div class="card">
+      <div class="field"><label>Agama</label>${sel('agama', AGAMA, f.agama)}</div>
+      <div class="field"><label>Status Perkawinan</label>${sel('statusKawin', STATUS_KAWIN, f.statusKawin)}</div>
+      <div class="field"><label>Pendidikan Terakhir</label>${sel('pendidikan', PENDIDIKAN, f.pendidikan)}</div>
+      <div class="field" style="margin-bottom:0">
+        <label>Pekerjaan</label>
+        <input id="f_pekerjaan" type="text" placeholder="Contoh: Karyawan Swasta" value="${esc(f.pekerjaan||'')}">
+      </div>
+    </div>
+
+    <div class="section-title">Domisili</div>
+    <div class="card">
+      <div class="field">
+        <label>Wilayah Pendataan</label>
+        <div class="locked">📍 ${LABEL_WILAYAH}</div>
+        <div class="hint">Wilayah terkunci — seluruh data warga hanya untuk RT 03 / RW 02 Desa Babakansari, Kecamatan Sukaluyu, Kabupaten Cianjur.</div>
+      </div>
+      <div class="field" style="margin-bottom:0">
+        <label>Status Hunian</label>${sel('hunian', HUNIAN, f.hunian)}
+      </div>
+    </div>
+
+    <div class="section-title">Kontak & Catatan</div>
+    <div class="card">
+      <div class="field">
+        <label>No. HP / WhatsApp</label>
+        <input id="f_hp" type="tel" inputmode="tel" placeholder="08xxxxxxxxxx" value="${esc(f.hp||'')}">
+      </div>
+      <div class="field" style="margin-bottom:0">
+        <label>Catatan</label>
+        <textarea id="f_catatan" placeholder="Misalnya: penerima bantuan, lansia, disabilitas, dll.">${esc(f.catatan||'')}</textarea>
+      </div>
+    </div>
+
+    <button class="btn" id="btnSimpan">${d ? '💾 Simpan Perubahan' : '💾 Simpan Data Warga'}</button>
+    <button class="btn gray" id="btnBatal" style="margin-top:10px">Batal</button>
+    <div class="foot">Data disimpan di perangkat dan disinkronkan ke Firebase saat online. Buat cadangan JSON secara berkala.</div>
+  `;
+
+  let jkVal = f.jk === 'P' ? 'P' : 'L';
+  el.querySelectorAll('#f_jk [data-jk]').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      jkVal = b.dataset.jk;
+      el.querySelectorAll('#f_jk [data-jk]').forEach(x=>{
+        x.classList.toggle('on', x.dataset.jk === jkVal);
+      });
+    });
+  });
+
+  ['f_nik','f_kk'].forEach(id=>{
+    const inp = el.querySelector('#'+id);
+    inp.addEventListener('input', ()=>{ inp.value = inp.value.replace(/\D/g,'').slice(0,16); });
+  });
+
+  const kkSel = el.querySelector('#f_kkExisting');
+  const kkInput = el.querySelector('#f_kk');
+  const alamatInput = el.querySelector('#f_alamat');
+  const infoKK = el.querySelector('#infoKK');
+
+  function applyKK(kkNo, isiField){
+    if(!kkNo){
+      kkInput.readOnly = false;
+      if(infoKK) infoKK.innerHTML = '';
+      return;
+    }
+    const grp = kkGroups.find(g=>g.no === kkNo);
+    if(!grp) return;
+    kkInput.readOnly = true;
+    if(isiField){
+      kkInput.value = grp.no;
+      if(grp.alamat) alamatInput.value = grp.alamat;
+    }
+    if(infoKK){
+      const members = grp.anggota.slice().sort((a,b)=>(a.nama||'').localeCompare(b.nama||''));
+      infoKK.innerHTML = `
+        <div class="kk-info">
+          <div class="kk-info-head">
+            <span>👨‍👩‍👧 Anggota KK terdaftar</span>
+            <span>${members.length} orang</span>
+          </div>
+          <div class="ku-names">
+            ${members.map(m=>`<span class="ku-name"><span class="dot ${m.jk==='P'?'P':'L'}"></span><span>${esc(m.nama||'(tanpa nama)')}</span></span>`).join('')}
+          </div>
+          <div class="hint">Warga baru akan ditambahkan ke KK ini.</div>
+        </div>`;
+    }
+  }
+
+  if(kkSel){
+    kkSel.addEventListener('change', ()=>applyKK(kkSel.value, true));
+    if(preselectedKK) applyKK(preselectedKK, false);
+  }
+
+  // OCR dijalankan hanya ketika diminta; gambar diproses di browser dan tidak diunggah ke Firebase.
+  const ocrCameraFile = el.querySelector('#ocrCameraFile');
+  const ocrGalleryFile = el.querySelector('#ocrGalleryFile');
+  const ocrStatus = el.querySelector('#ocrStatus');
+  const ocrWrap = el.querySelector('#ocrResultWrap');
+  const ocrText = el.querySelector('#ocrText');
+  const ocrSelected = el.querySelector('#ocrSelected');
+  let ocrFile = null;
+  el.querySelector('#btnOCRCamera').addEventListener('click', ()=>ocrCameraFile.click());
+  el.querySelector('#btnOCRGallery').addEventListener('click', ()=>ocrGalleryFile.click());
+  const setOCRFile = file => {
+    if(!file) return;
+    if(!file.type.startsWith('image/')){toast('File harus berupa gambar');return;}
+    if(file.size>12*1024*1024){toast('Ukuran foto maksimal 12 MB');return;}
+    ocrFile=file;
+    ocrSelected.textContent='Foto dipilih: '+file.name;
+    ocrStatus.textContent='Foto siap dibaca. Tekan tombol Baca Dokumen.';
+    ocrWrap.style.display='none';
+  };
+  ocrCameraFile.addEventListener('change', ()=>setOCRFile(ocrCameraFile.files && ocrCameraFile.files[0]));
+  ocrGalleryFile.addEventListener('change', ()=>setOCRFile(ocrGalleryFile.files && ocrGalleryFile.files[0]));
+  let ocrWorkerPromise = null;
+
+  async function getOCRWorker(){
+    if(!window.Tesseract){
+      await new Promise((resolve,reject)=>{
+        const script=document.createElement('script');
+        script.src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';
+        script.onload=resolve;
+        script.onerror=()=>reject(new Error('Gagal memuat mesin OCR. Periksa koneksi internet.'));
+        document.head.appendChild(script);
+      });
+    }
+    if(!ocrWorkerPromise){
+      ocrWorkerPromise=window.Tesseract.createWorker('ind+eng', 1, {
+        langPath:'https://tessdata.projectnaptha.com/4.0.0',
+        logger:m=>{
+          if(m.status==='recognizing text') ocrStatus.textContent='Sedang membaca dokumen: '+Math.round((m.progress||0)*100)+'%';
+          else if(m.status) ocrStatus.textContent='OCR: '+m.status+'...';
+        }
+      });
+    }
+    return ocrWorkerPromise;
+  }
+
+  el.querySelector('#btnOCR').addEventListener('click', async ()=>{
+    const file=ocrFile;
+    if(!file){toast('Foto KTP atau KK dulu melalui kamera atau galeri');return;}
+    const btn=el.querySelector('#btnOCR');
+    btn.disabled=true;btn.textContent='⏳ Membaca...';
+    ocrStatus.textContent='Menyiapkan mesin OCR...';
+    try{
+      const worker=await getOCRWorker();
+      const result=await worker.recognize(file);
+      ocrText.value=(result.data.text||'').trim();
+      ocrWrap.style.display='block';
+      ocrStatus.textContent=ocrText.value?'Selesai. Periksa teks hasil OCR, lalu terapkan ke formulir.':'Tulisan belum terbaca. Coba foto yang lebih terang dan tajam.';
+      if(!ocrText.value) toast('Teks belum berhasil dibaca');
+    }catch(err){
+      console.error('OCR error:',err);
+      ocrStatus.textContent='OCR gagal: '+(err.message||'Terjadi kesalahan');
+      toast('Gagal membaca dokumen');
+    }finally{
+      btn.disabled=false;btn.textContent='🔎 Baca Dokumen';
+    }
+  });
+
+  el.querySelector('#btnOCRApply').addEventListener('click', ()=>{
+    const text=ocrText.value||'';
+    const lines=text.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
+    const fill=(id,value)=>{const node=el.querySelector('#f_'+id);if(node && value && !node.readOnly) node.value=value;};
+    const nikMatch=text.match(/\b\d{16}\b/);
+    if(nikMatch) fill('nik',nikMatch[0]);
+    // Nomor KK sering muncul pada dokumen KK; ambil 16 digit setelah label bila tersedia.
+    const kkMatch=text.match(/(?:NO\.?\s*KK|NOMOR\s*KARTU\s*KELUARGA|KARTU\s*KELUARGA)[^\d]{0,30}(\d{16})/i);
+    if(kkMatch) fill('kk',kkMatch[1]);
+    const dateMatch=text.match(/(?:TEMPAT\s*\/\s*TGL\s*LAHIR|TGL\.?\s*LAHIR|TANGGAL\s*LAHIR)[^\d]{0,35}(\d{2})[-\/. ](\d{2})[-\/. ](\d{4})/i);
+    if(dateMatch){
+      const dd=dateMatch[1],mm=dateMatch[2],yyyy=dateMatch[3];
+      const date=yyyy+'-'+mm+'-'+dd;
+      const test=new Date(date+'T00:00:00');
+      if(!isNaN(test) && test.getFullYear()===Number(yyyy) && test.getMonth()+1===Number(mm) && test.getDate()===Number(dd)) fill('tglLahir',date);
+    }
+    const gender=text.match(/\b(LAKI[- ]LAKI|PEREMPUAN)\b/i);
+    if(gender){
+      jkVal=/PEREMPUAN/i.test(gender[1])?'P':'L';
+      el.querySelectorAll('#f_jk [data-jk]').forEach(x=>x.classList.toggle('on',x.dataset.jk===jkVal));
+    }
+    const valueAfter=(label)=>{
+      const re=new RegExp('(?:^|\n)\s*'+label+'\s*[:：]?\s*([^\n]+)','i');
+      const m=text.match(re);return m?m[1].trim():'';
+    };
+    let nama=valueAfter('NAMA');
+    if(!nama && nikMatch){
+      const ix=lines.findIndex(x=>x.includes(nikMatch[0]));
+      if(ix>=0){
+        const candidate=lines.slice(ix+1,ix+4).find(x=>x.length>2 && !/^(NIK|TEMPAT|TGL|JENIS KELAMIN|ALAMAT|PROVINSI|KABUPATEN)/i.test(x));
+        if(candidate) nama=candidate.replace(/^NAMA\s*[:：]?\s*/i,'').trim();
+      }
+    }
+    if(nama) fill('nama',nama);
+    const alamat=valueAfter('ALAMAT');if(alamat) fill('alamat',alamat);
+    const agama=valueAfter('AGAMA');if(agama){const a=AGAMA.find(x=>x.toLowerCase()===agama.toLowerCase());if(a) fill('agama',a);}
+    const status=valueAfter('STATUS PERKAWINAN');if(status){const a=STATUS_KAWIN.find(x=>x.toLowerCase()===status.toLowerCase());if(a) fill('statusKawin',a);}
+    toast('Data OCR diterapkan. Periksa semua kolom sebelum menyimpan.');
+    el.querySelector('#f_nik').scrollIntoView({behavior:'smooth',block:'center'});
+  });
+
+  el.querySelector('#btnBatal').addEventListener('click', ()=>{
+    editId = null;
+    prefillKK = '';
+    go(prevPage === 'form' ? 'beranda' : prevPage);
+  });
+
+  el.querySelector('#btnSimpan').addEventListener('click', ()=>simpanForm(el, jkVal));
+}
+
+function simpanForm(el, jkVal){
+  const v = id => el.querySelector('#f_'+id).value.trim();
+  const data = {
+    nik: v('nik'), kk: v('kk'), nama: v('nama'), jk: jkVal, peranKK: v('peranKK'),
+    tglLahir: v('tglLahir'), agama: v('agama'), statusKawin: v('statusKawin'),
+    pendidikan: v('pendidikan'), pekerjaan: v('pekerjaan'), alamat: v('alamat'),
+    rt: LOKASI.rt, rw: LOKASI.rw, hunian: v('hunian'), hp: v('hp'), catatan: v('catatan')
+  };
+
+  let ok = true;
+  const setErr = (wrapId, val) => {
+    const w = el.querySelector('#'+wrapId);
+    if(!w) return;
+    w.classList.toggle('haserr', !val);
+    const inp = w.querySelector('input,select,textarea');
+    if(inp) inp.classList.toggle('err', !val);
+    if(!val) ok = false;
+  };
+
+  setErr('w_nik', /^\d{16}$/.test(data.nik) && !DB.some(x=>x.nik===data.nik && x.id!==editId));
+  setErr('w_kk', data.kk === '' || /^\d{16}$/.test(data.kk));
+  setErr('w_nama', data.nama.length > 0);
+  setErr('w_tgl', !!data.tglLahir && umur(data.tglLahir) !== null);
+
+  if(!ok){
+    const first = el.querySelector('.haserr');
+    if(first) first.scrollIntoView({behavior:'smooth', block:'center'});
+    toast('Periksa kembali data yang ditandai merah');
+    return;
+  }
+
+  if(data.kk && data.peranKK === 'Kepala Keluarga' && DB.some(x => x.kk === data.kk && x.peranKK === 'Kepala Keluarga' && x.id !== editId)){
+    toast('KK ini sudah memiliki kepala keluarga. Edit data kepala keluarga yang sudah ada terlebih dahulu.');
+    return;
+  }
+
+  const now = new Date().toISOString();
+  if(editId){
+    const i = DB.findIndex(x=>x.id===editId);
+    DB[i] = { ...DB[i], ...data, diubah: now };
+    toast('Data warga diperbarui');
+  } else {
+    DB.push({ id: uid(), ...data, dibuat: now });
+    toast('Data warga ditambahkan');
+  }
+
+  simpanDB();
+  editId = null;
+  prefillKK = '';
+  go('warga');
+}
+
+/* =========================================================
+   RENDER: STATISTIK
+   ========================================================= */
+function renderStat(){
+  const el = document.getElementById('page-stat');
+  const total = DB.length;
+
+  if(total === 0){
+    el.innerHTML = `<div class="empty"><div>📊</div>Belum ada data untuk dihitung.</div>`;
+    return;
+  }
+
+  const L = DB.filter(d=>d.jk==='L').length;
+  const P = DB.filter(d=>d.jk==='P').length;
+  const kkCount = new Set(DB.map(d=>d.kk).filter(x=>x)).size;
+  const umurArr = DB.map(d=>umur(d.tglLahir));
+  const anak = umurArr.filter(u=>u!==null && u<=17).length;
+  const lansia = umurArr.filter(u=>u!==null && u>=60).length;
+  const umurTidakLengkap = umurArr.filter(u=>u===null).length;
+
+  const grup = [
+    {lb:'0–5 tahun', min:0, max:5}, {lb:'6–12 tahun', min:6, max:12},
+    {lb:'13–17 tahun', min:13, max:17}, {lb:'18–25 tahun', min:18, max:25},
+    {lb:'26–35 tahun', min:26, max:35}, {lb:'36–45 tahun', min:36, max:45},
+    {lb:'46–55 tahun', min:46, max:55}, {lb:'56–65 tahun', min:56, max:65},
+    {lb:'65+ tahun', min:66, max:999}
+  ];
+
+  const grupData = grup.map(g=>{
+    const anggota = DB.map(d => ({ d, u: umur(d.tglLahir) }))
+      .filter(x => x.u !== null && x.u >= g.min && x.u <= g.max)
+      .sort((a,b) => (a.d.nama||'').localeCompare(b.d.nama||''));
+    return { label: g.lb, min: g.min, max: g.max, anggota };
+  });
+
+  const hitung = k => {
+    const m = {};
+    DB.forEach(d=>{ const s = d[k] || 'Belum diisi'; m[s] = (m[s]||0)+1; });
+    return m;
+  };
+  const keArr = (m, urutan) => {
+    let keys = Object.keys(m);
+    if(urutan) keys.sort((a,b)=>{
+      const ia = urutan.indexOf(a), ib = urutan.indexOf(b);
+      if(ia===-1 && ib===-1) return 0;
+      if(ia===-1) return 1;
+      if(ib===-1) return -1;
+      return ia - ib;
+    }); else keys.sort((a,b)=>m[b]-m[a]);
+    return keys.map(k=>({label:k, value:m[k]}));
+  };
+
+  const kawinData = keArr(hitung('statusKawin'), STATUS_KAWIN);
+  const didikData = keArr(hitung('pendidikan'), PENDIDIKAN);
+  const hunianData = keArr(hitung('hunian'), HUNIAN);
+  const agamaData = keArr(hitung('agama'), AGAMA);
+  const kerjaData = keArr(hitung('pekerjaan')).slice(0,6);
+
+  const persenL = Math.round(L/total*100);
+  const persenP = 100 - persenL;
+
+  el.innerHTML = `
+    <div class="wilayah">
+      <div class="wi">📊</div>
+      <div class="wt">
+        <b>${LABEL_WILAYAH}</b>
+        <span>${total} jiwa · ${kkCount} KK</span>
+      </div>
+    </div>
+
+    <div class="stat-summary">
+      <div class="stat" style="cursor:default">
+        <div class="lb">Total Penduduk</div>
+        <div class="vl" style="color:#0f766e">${total}</div>
+        <div class="sb">jiwa terdata</div>
+      </div>
+      <div class="stat" style="cursor:default">
+        <div class="lb">Kepala Keluarga</div>
+        <div class="vl" style="color:#2563eb">${kkCount}</div>
+        <div class="sb">nomor KK unik</div>
+      </div>
+      <div class="stat" style="cursor:default">
+        <div class="lb">Laki-laki</div>
+        <div class="vl" style="color:#2563eb">${L}</div>
+        <div class="sb">${persenL}% dari total</div>
+      </div>
+      <div class="stat" style="cursor:default">
+        <div class="lb">Perempuan</div>
+        <div class="vl" style="color:#db2777">${P}</div>
+        <div class="sb">${persenP}% dari total</div>
+      </div>
+      <div class="stat" style="cursor:default">
+        <div class="lb">Anak (0–17)</div>
+        <div class="vl" style="color:#f59e0b">${anak}</div>
+        <div class="sb">jiwa</div>
+      </div>
+      <div class="stat" style="cursor:default">
+        <div class="lb">Lansia (60+)</div>
+        <div class="vl" style="color:#7c3aed">${lansia}</div>
+        <div class="sb">jiwa</div>
+      </div>
+    </div>
+
+    <div class="section-title">Kelompok Umur</div>
+    <div class="card">
+      <div class="hint" style="margin-bottom:14px">Seluruh nama warga ditampilkan. Ketuk nama untuk detail.</div>
+      ${kelompokUmurList(grupData, total)}
+      ${umurTidakLengkap ? `<div class="hint" style="margin-top:14px">${umurTidakLengkap} data tanpa tanggal lahir valid tidak dihitung.</div>` : ''}
+    </div>
+
+    <div class="section-title">Status Perkawinan</div>
+    <div class="card">${barList(kawinData, total)}</div>
+
+    <div class="section-title">Pendidikan Terakhir</div>
+    <div class="card">${barList(didikData, total)}</div>
+
+    <div class="section-title">Pekerjaan Terbanyak</div>
+    <div class="card">${barList(kerjaData, total)}</div>
+
+    <div class="section-title">Status Hunian</div>
+    <div class="card">${barList(hunianData, total)}</div>
+
+    <div class="section-title">Agama</div>
+    <div class="card">${barList(agamaData, total)}</div>
+
+    <div class="foot">Statistik otomatis dari seluruh data warga ${LABEL_WILAYAH}</div>
+  `;
+
+  el.querySelectorAll('[data-pid]').forEach(b=>{
+    b.addEventListener('click', ()=>bukaDetail(b.dataset.pid));
+  });
+}
+
+function kelompokUmurList(data, total){
+  if(!data.length) return `<div style="font-size:12.5px;color:#94a3b8">Belum ada data.</div>`;
+  const max = Math.max(...data.map(g=>g.anggota.length), 1);
+
+  return data.map(g=>{
+    const jml = g.anggota.length;
+    const pct = total ? Math.round(jml/total*100) : 0;
+    const isi = jml === 0
+      ? `<div class="ku-empty">Tidak ada warga di kelompok ini</div>`
+      : `<div class="ku-names">
+          ${g.anggota.map(({d,u})=>`
+            <div class="ku-name" data-pid="${d.id}" title="Usia ${u} tahun">
+              <span class="dot ${d.jk==='P'?'P':'L'}"></span>
+              <span>${esc(d.nama||'(tanpa nama)')}</span>
+            </div>`).join('')}
+        </div>`;
+
+    return `<div class="ku-group">
+      <div class="ku-head">
+        <span>${esc(g.label)}</span>
+        <span class="ku-count">${jml} jiwa${jml?` (${pct}%)`:''}</span>
+      </div>
+      <div class="bar" style="margin:0 0 6px">
+        <div class="track" style="height:6px">
+          <div class="fill" style="width:${jml?Math.max(4,Math.round(jml/max*100)):0}%"></div>
+        </div>
+      </div>
+      ${isi}
+    </div>`;
+  }).join('');
+}
+
+function barList(data, total){
+  if(!data.length) return `<div style="font-size:12.5px;color:#94a3b8">Belum ada data.</div>`;
+  const max = Math.max(...data.map(d=>d.value), 1);
+  return data.map(d=>{
+    const w = Math.round(d.value / max * 100);
+    const pct = total ? Math.round(d.value/total*100) : 0;
+    return `<div class="bar">
+      <div class="bl"><span>${esc(d.label)}</span><span>${d.value} (${pct}%)</span></div>
+      <div class="track"><div class="fill" style="width:${w}%"></div></div>
+    </div>`;
+  }).join('');
+}
+
+/* =========================================================
+   RENDER: LAINNYA
+   ========================================================= */
+function renderLain(){
+  const el = document.getElementById('page-lain');
+  const total = DB.length;
+  const ukuran = (()=>{ try{ return new Blob([JSON.stringify(DB)]).size; }catch(e){ return 0; } })();
+
+  el.innerHTML = `
+    <div class="wilayah">
+      <div class="wi">⚙️</div>
+      <div class="wt">
+        <b>${LABEL_WILAYAH}</b>
+        <span>${total} data · ${(ukuran/1024).toFixed(1)} KB tersimpan</span>
+      </div>
+    </div>
+
+    <div class="section-title">Ekspor Data</div>
+    <div class="card">
+      <p style="font-size:12.5px;color:#64748b;margin:0 0 14px;line-height:1.6">
+        Unduh data warga untuk dibuka di Excel atau sebagai cadangan. Simpan file cadangan di tempat aman karena berisi data pribadi.
+      </p>
+      <button class="btn" id="btnCSV">📊 Unduh CSV (Excel)</button>
+      <button class="btn ghost" id="btnJSON" style="margin-top:10px">💾 Unduh Cadangan (JSON)</button>
+    </div>
+
+    <div class="section-title">Impor Data</div>
+    <div class="card">
+      <p style="font-size:12.5px;color:#64748b;margin:0 0 14px;line-height:1.6">
+        Pulihkan cadangan JSON atau tambahkan data dari file CSV.
+        Data dengan NIK yang sudah ada akan dilewati.
+      </p>
+      <input type="file" id="fileImpor" accept=".json,.csv" style="display:none">
+      <button class="btn ghost" id="btnImpor">📂 Pilih File untuk Diimpor</button>
+    </div>
+
+    <div class="section-title">Keamanan</div>
+    <div class="card">
+      <p style="font-size:12.5px;color:#64748b;margin:0 0 14px;line-height:1.6">
+        Aplikasi menggunakan Login Firebase. Data warga disinkronkan ke database cloud Firebase untuk akun yang sedang masuk. Keluar akan mengakhiri sesi ini dan Anda perlu memasukkan kata sandi lagi untuk masuk.
+      </p>
+      <button class="btn ghost" id="btnLogout">🚪 Keluar dari Aplikasi</button>
+    </div>
+
+    <div class="section-title">Zona Berbahaya</div>
+    <div class="card" style="border-color:#fecaca">
+      <p style="font-size:12.5px;color:#64748b;margin:0 0 14px;line-height:1.6">
+        Menghapus seluruh data warga secara permanen. Pastikan Anda sudah membuat cadangan.
+      </p>
+      <button class="btn danger" id="btnReset">🗑️ Hapus Semua Data</button>
+    </div>
+
+    <div class="foot">Aplikasi Pendataan Penduduk · ${LABEL_WILAYAH}<br>Data disimpan lokal dan disinkronkan ke Firebase saat online.</div>
+  `;
+
+  el.querySelector('#btnCSV').addEventListener('click', eksporCSV);
+  el.querySelector('#btnJSON').addEventListener('click', eksporJSON);
+  el.querySelector('#btnLogout').addEventListener('click', logout);
+
+  const fileInput = el.querySelector('#fileImpor');
+  el.querySelector('#btnImpor').addEventListener('click', ()=>fileInput.click());
+  fileInput.addEventListener('change', e=>{
+    const f = e.target.files[0];
+    if(!f) return;
+    if(f.size > 10 * 1024 * 1024){ toast('Ukuran file maksimal 10 MB'); fileInput.value=''; return; }
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try{
+        if(f.name.toLowerCase().endsWith('.json')) imporJSON(ev.target.result);
+        else imporCSV(ev.target.result);
+      }catch(err){ toast('Gagal impor: ' + err.message); }
+      fileInput.value = '';
+    };
+    reader.readAsText(f, 'UTF-8');
+  });
+
+
+  el.querySelector('#btnReset').addEventListener('click', ()=>{
+    if(!confirm('Hapus SEMUA data warga ' + LABEL_WILAYAH + ' secara permanen?')) return;
+    if(!confirm('Konfirmasi terakhir: data tidak dapat dikembalikan. Lanjutkan?')) return;
+    DB = []; simpanDB(); toast('Semua data telah dihapus'); go('beranda');
+  });
+}
+
+/* =========================================================
+   EKSPOR / IMPOR
+   ========================================================= */
+const KOLOM = [
+  ['nik','NIK'],['nama','Nama'],['jk','Jenis Kelamin'],['tglLahir','Tanggal Lahir'],
+  ['kk','No KK'],['peranKK','Status dalam Keluarga'],['agama','Agama'],['statusKawin','Status Perkawinan'],
+  ['pendidikan','Pendidikan'],['pekerjaan','Pekerjaan'],['alamat','Alamat'],
+  ['rt','RT'],['rw','RW'],['hunian','Status Hunian'],['hp','No HP'],['catatan','Catatan']
+];
+
+function csvCell(v){
+  let s = String(v==null?'':v);
+  // Cegah formula injection saat CSV dibuka di aplikasi spreadsheet.
+  if(/^[\s]*[=+@\-]/.test(s)) s = "'" + s;
+  if(/[",\n\r]/.test(s)) return '"' + s.replace(/"/g,'""') + '"';
+  return s;
+}
+
+function unduh(namaFile, isi, mime){
+  const blob = new Blob([isi], {type:mime});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = namaFile;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url), 1500);
+}
+
+function eksporCSV(){
+  const head = KOLOM.map(k=>k[1]).join(',');
+  const body = DB.map(d => KOLOM.map(k=>csvCell(d[k[0]])).join(','));
+  const csv = '\uFEFF' + [head, ...body].join('\r\n');
+  const tgl = new Date().toISOString().slice(0,10);
+  unduh('penduduk-rt03-rw02-babakansari-' + tgl + '.csv', csv, 'text/csv;charset=utf-8');
+  toast('CSV berhasil diunduh');
+}
+
+function eksporJSON(){
+  const tgl = new Date().toISOString().slice(0,10);
+  unduh('cadangan-rt03-rw02-babakansari-' + tgl + '.json',
+    JSON.stringify(DB, null, 2), 'application/json');
+  toast('Cadangan JSON berhasil diunduh');
+}
+
+function parseCSV(text){
+  text = String(text || '').replace(/^\uFEFF/, '');
+  // Kenali CSV umum dari Excel: koma, titik koma, atau tab.
+  const first = (text.split(/\r?\n/,1)[0] || '');
+  const delimiter = [',',';','\t'].sort((a,b)=>first.split(b).length-first.split(a).length)[0];
+  const rows = []; let row = [], cur = '', q = false;
+  for(let i=0;i<text.length;i++){
+    const c = text[i];
+    if(q){
+      if(c === '"'){ if(text[i+1] === '"'){ cur += '"'; i++; } else q = false; }
+      else cur += c;
+    } else {
+      if(c === '"') q = true;
+      else if(c === delimiter){ row.push(cur); cur = ''; }
+      else if(c === '\n'){ row.push(cur); cur=''; rows.push(row); row = []; }
+      else if(c === '\r'){}
+      else cur += c;
+    }
+  }
+  if(q) throw new Error('CSV memiliki tanda kutip yang tidak berpasangan');
+  if(cur !== '' || row.length){ row.push(cur); rows.push(row); }
+  return rows.filter(r => r.length > 1 || (r.length === 1 && r[0].trim() !== ''));
+}
+
+function normTgl(s){
+  if(!s) return '';
+  const t = String(s).trim();
+  let y, m, d;
+  if(/^\d{4}-\d{2}-\d{2}$/.test(t)){ [y,m,d] = t.split('-').map(Number); }
+  else {
+    const a = t.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+    if(!a) return '';
+    // Format Indonesia: DD/MM/YYYY atau DD-MM-YYYY.
+    d = Number(a[1]); m = Number(a[2]); y = Number(a[3]);
+  }
+  const dt = new Date(y, m-1, d);
+  if(dt.getFullYear()!==y || dt.getMonth()!==m-1 || dt.getDate()!==d) return '';
+  return String(y).padStart(4,'0')+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+}
+
+function bersihkanObj(o){
+  const jkRaw = String(o.jk||'').toUpperCase();
+  let jk = 'L';
+  if(jkRaw.startsWith('P') || jkRaw.includes('PEREMPUAN')) jk = 'P';
+  return {
+    nik: String(o.nik||'').replace(/\D/g,'').slice(0,16),
+    kk: String(o.kk||'').replace(/\D/g,'').slice(0,16),
+    nama: String(o.nama||'').trim(),
+    jk, peranKK: String(o.peranKK||'').toLowerCase().includes('kepala') ? 'Kepala Keluarga' : 'Anggota',
+    tglLahir: normTgl(o.tglLahir),
+    agama: String(o.agama||'').trim(),
+    statusKawin: String(o.statusKawin||'').trim(),
+    pendidikan: String(o.pendidikan||'').trim(),
+    pekerjaan: String(o.pekerjaan||'').trim(),
+    alamat: String(o.alamat||'').trim(),
+    rt: LOKASI.rt, rw: LOKASI.rw,
+    hunian: String(o.hunian||'').trim(),
+    hp: String(o.hp||'').trim(),
+    catatan: String(o.catatan||'').trim()
+  };
+}
+
+function tambahMassal(arr){
+  let masuk = 0, lewat = 0;
+  const now = new Date().toISOString();
+  arr.forEach(raw=>{
+    const d = bersihkanObj(raw);
+    if(!d.nama || !/^\d{16}$/.test(d.nik) || (d.kk && !/^\d{16}$/.test(d.kk))){ lewat++; return; }
+    if(DB.some(x=>x.nik === d.nik)){ lewat++; return; }
+    DB.push({ id: uid(), ...d, dibuat: now });
+    masuk++;
+  });
+  simpanDB();
+  return { masuk, lewat };
+}
+
+function imporJSON(text){
+  let data;
+  try{ data = JSON.parse(text); }catch(e){ throw new Error('format JSON tidak valid'); }
+  if(!Array.isArray(data)) throw new Error('JSON harus berupa daftar');
+  if(!data.length) throw new Error('file kosong');
+  const r = tambahMassal(data);
+  toast(r.masuk + ' masuk, ' + r.lewat + ' dilewati');
+  render();
+}
+
+function imporCSV(text){
+  const rows = parseCSV(text);
+  if(rows.length < 2) throw new Error('CSV kosong atau tidak valid');
+  const normHead = h => String(h||'').replace(/^\uFEFF/,'').trim().toLowerCase().replace(/[ _-]+/g,'');
+  const head = rows[0].map(normHead);
+  const aliases = {nik:['nik','nomorindukkependudukan'],nama:['nama','namalengkap'],jk:['jeniskelamin','jk','gender'],tglLahir:['tanggallahir','tgllahir','lahir'],kk:['nokk','nomorkk','kartukeluarga'],peranKK:['statusdalamkeluarga','perankk','statuskk']};
+  const cari = names => head.findIndex(h => names.map(normHead).includes(h));
+  const map = {};
+  KOLOM.forEach(([key,label])=>{
+    let i = cari([label,key,...(aliases[key]||[])]);
+    if(i!==-1) map[key] = i;
+  });
+  if(map.nik === undefined || map.nama === undefined){
+    throw new Error('kolom "NIK" dan "Nama" wajib ada');
+  }
+  const arr = rows.slice(1).map(r=>{
+    const o = {};
+    Object.keys(map).forEach(k=>{ o[k] = r[map[k]]; });
+    return o;
+  });
+  const hasil = tambahMassal(arr);
+  toast(hasil.masuk + ' masuk, ' + hasil.lewat + ' dilewati');
+  render();
+}
+
+/* =========================================================
+   START
+   ========================================================= */
+muat();
+render();
+initLogin();
+</script>
+</body>
+</html>
